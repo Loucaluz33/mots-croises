@@ -70,6 +70,7 @@
     font-size: 0.82em;
     color: #888;
     text-align: left;
+    margin-top: 2px;
   }
   .grid-btn .grid-info { text-align: left; }
   .grid-btn .arrow {
@@ -96,27 +97,38 @@
 </div>
 
 <script>
-// List of available grids — add new entries here when you create new puzzles
+// === GRILLES DISPONIBLES ===
+// Pour ajouter une grille, ajoutez une entrée ici avec le nom du fichier JSON
 const grids = [
-  { file: 'MK.json', title: 'MK', author: '', description: 'Première grille' }
+  { file: 'MK.json' }
 ];
 
 const list = document.getElementById('gridList');
-list.innerHTML = '';
 
-for (const g of grids) {
-  const a = document.createElement('a');
-  a.className = 'grid-btn';
-  a.href = `joueur.html?grille=${encodeURIComponent(g.file)}`;
-  a.innerHTML = `
-    <div class="grid-info">
-      <div class="grid-title">${g.title}</div>
-      <div class="grid-meta">${[g.author, g.description].filter(Boolean).join(' — ')}</div>
-    </div>
-    <span class="arrow">&rarr;</span>
-  `;
-  list.appendChild(a);
-}
+// Load each grid's JSON to get title, author, size
+Promise.all(grids.map(g =>
+  fetch(g.file)
+    .then(r => r.json())
+    .then(data => ({ file: g.file, title: data.title || g.file, author: data.author || '', size: data.size }))
+    .catch(() => ({ file: g.file, title: g.file, author: '', size: null }))
+)).then(results => {
+  list.innerHTML = '';
+  for (const g of results) {
+    const a = document.createElement('a');
+    a.className = 'grid-btn';
+    a.href = `joueur.html?grille=${encodeURIComponent(g.file)}`;
+    const sizeTxt = g.size ? `${g.size.rows} x ${g.size.cols}` : '';
+    const metaParts = [g.author, sizeTxt].filter(Boolean).join(' — ');
+    a.innerHTML = `
+      <div class="grid-info">
+        <div class="grid-title">${g.title}</div>
+        ${metaParts ? `<div class="grid-meta">${metaParts}</div>` : ''}
+      </div>
+      <span class="arrow">&rarr;</span>
+    `;
+    list.appendChild(a);
+  }
+});
 </script>
 </body>
 </html>

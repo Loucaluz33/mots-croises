@@ -24,6 +24,21 @@
   }
   header h1 { font-size: 1.3em; font-weight: 700; }
   .header-info { text-align: right; font-size: 0.85em; opacity: 0.8; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: background 0.2s;
+  }
+  .home-btn:hover { background: rgba(255,255,255,0.3); }
 
   .welcome {
     display: flex;
@@ -311,7 +326,10 @@
 
 <header>
   <div><h1>Mots Croisés</h1></div>
-  <div class="header-info" id="headerInfo"></div>
+  <div class="header-right">
+    <div class="header-info" id="headerInfo"></div>
+    <a href="index.html" class="home-btn" title="Retour au menu">&#8962;</a>
+  </div>
 </header>
 
 <!-- Welcome -->
