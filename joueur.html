@@ -230,6 +230,14 @@
     border-color: #2ecc71;
     box-shadow: inset 0 0 0 1.5px #2ecc71;
   }
+  table.crossword td.validated {
+    background: #e8f5e9 !important;
+    color: #2e7d32;
+    cursor: default;
+  }
+  table.crossword td.pending-letter {
+    background: #e8f0fe;
+  }
 
   @keyframes sparkle {
     0%   { background: white; color: #1a1a2e; transform: scale(1); }
@@ -418,6 +426,7 @@ let revealedCells = new Set();
 let wrongCells = new Set();
 let checkedCells = new Set();
 let celebratedWords = new Set();
+let validatedCells = new Set();
 let answers = {};
 let acrossClues = {};
 let downClues = {};
@@ -456,6 +465,7 @@ function loadPuzzle(data) {
   wrongCells = new Set();
   checkedCells = new Set();
   celebratedWords = new Set();
+  validatedCells = new Set();
 
   answers = {};
   for (let r = 0; r < rows; r++)
@@ -583,9 +593,14 @@ function renderGrid() {
           td.classList.add('highlight');
         }
 
-        if (wrongCells.has(key)) td.classList.add('wrong-cell');
-        if (revealedCells.has(key)) td.classList.add('revealed-cell');
-        if (checkedCells.has(key)) td.classList.add('checked-correct');
+        if (validatedCells.has(key)) {
+          td.classList.add('validated');
+        } else {
+          if (wrongCells.has(key)) td.classList.add('wrong-cell');
+          if (revealedCells.has(key)) td.classList.add('revealed-cell');
+          if (checkedCells.has(key)) td.classList.add('checked-correct');
+          if (autocheck === 'word' && cell.letter && !validatedCells.has(key)) td.classList.add('pending-letter');
+        }
 
         td.addEventListener('click', () => onCellClick(r, c));
       }
@@ -601,6 +616,7 @@ function renderGrid() {
 // ========== INTERACTION ==========
 function onCellClick(r, c) {
   if (playerGrid[r][c].black || solved) return;
+  if (validatedCells.has(`${r},${c}`)) return;
   if (selectedCell && selectedCell[0] === r && selectedCell[1] === c) {
     currentDirection = currentDirection === 'across' ? 'down' : 'across';
   }
@@ -626,13 +642,13 @@ document.addEventListener('keydown', (e) => {
 
   if (e.key === 'Backspace') {
     e.preventDefault();
-    if (playerGrid[r][c].letter && !revealedCells.has(`${r},${c}`)) {
+    if (playerGrid[r][c].letter && !revealedCells.has(`${r},${c}`) && !validatedCells.has(`${r},${c}`)) {
       playerGrid[r][c].letter = '';
       wrongCells.delete(`${r},${c}`);
     } else {
       moveCursor(-1);
       const [nr, nc] = selectedCell;
-      if (!revealedCells.has(`${nr},${nc}`)) {
+      if (!revealedCells.has(`${nr},${nc}`) && !validatedCells.has(`${nr},${nc}`)) {
         playerGrid[nr][nc].letter = '';
         wrongCells.delete(`${nr},${nc}`);
       }
@@ -644,7 +660,7 @@ document.addEventListener('keydown', (e) => {
 
   if (e.key === 'Delete') {
     e.preventDefault();
-    if (!revealedCells.has(`${r},${c}`)) {
+    if (!revealedCells.has(`${r},${c}`) && !validatedCells.has(`${r},${c}`)) {
       playerGrid[r][c].letter = '';
       wrongCells.delete(`${r},${c}`);
     }
@@ -660,7 +676,7 @@ document.addEventListener('keydown', (e) => {
 
   if (/^[a-zA-ZÀ-ÿ]$/.test(e.key)) {
     e.preventDefault();
-    if (revealedCells.has(`${r},${c}`)) {
+    if (revealedCells.has(`${r},${c}`) || validatedCells.has(`${r},${c}`)) {
       moveCursor(1);
       renderGrid();
       return;
@@ -692,11 +708,11 @@ function moveCursor(delta) {
   let [r, c] = selectedCell;
   if (currentDirection === 'across') {
     c += delta;
-    while (c >= 0 && c < cols && playerGrid[r][c].black) c += delta;
+    while (c >= 0 && c < cols && (playerGrid[r][c].black || validatedCells.has(`${r},${c}`))) c += delta;
     if (c >= 0 && c < cols && !playerGrid[r][c].black) selectedCell = [r, c];
   } else {
     r += delta;
-    while (r >= 0 && r < rows && playerGrid[r][c].black) r += delta;
+    while (r >= 0 && r < rows && (playerGrid[r][c].black || validatedCells.has(`${r},${c}`))) r += delta;
     if (r >= 0 && r < rows && !playerGrid[r][c].black) selectedCell = [r, c];
   }
 }
@@ -776,6 +792,10 @@ function highlightActiveClue() {
 // ========== AUTOCHECK ==========
 function setAutocheck(mode) {
   autocheck = mode;
+  validatedCells.clear();
+  celebratedWords.clear();
+  wrongCells.clear();
+  renderGrid();
 }
 
 function checkLetter(r, c) {
@@ -798,12 +818,17 @@ function checkCurrentWord() {
 
 // ========== WORD FOUND ANIMATION ==========
 function celebrateIfCorrect(cells) {
+  if (autocheck !== 'word') return;
   if (cells.length < 2) return;
   if (!cells.every(([r, c]) => playerGrid[r][c].letter)) return;
   if (!cells.every(([r, c]) => playerGrid[r][c].letter === answers[`${r},${c}`])) return;
   const wordKey = cells.map(([r, c]) => `${r},${c}`).join('|');
   if (celebratedWords.has(wordKey)) return;
   celebratedWords.add(wordKey);
+
+  // Mark cells as validated (locked)
+  for (const [r, c] of cells) validatedCells.add(`${r},${c}`);
+  renderGrid();
 
   const table = document.querySelector('table.crossword');
   if (!table) return;
@@ -994,6 +1019,7 @@ function resetGrid() {
   wrongCells.clear();
   checkedCells.clear();
   celebratedWords.clear();
+  validatedCells.clear();
   solved = false;
   seconds = 0;
   if (timerInterval) clearInterval(timerInterval);
