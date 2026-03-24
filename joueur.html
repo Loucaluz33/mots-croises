@@ -694,8 +694,7 @@ document.addEventListener('keydown', (e) => {
     renderGrid();
     updateProgress();
 
-    celebrateIfCorrect(wordAcross);
-    celebrateIfCorrect(wordDown);
+    celebrateWords([wordAcross, wordDown]);
 
     checkVictory();
   }
@@ -815,36 +814,44 @@ function checkCurrentWord() {
 }
 
 // ========== WORD FOUND ANIMATION ==========
-function celebrateIfCorrect(cells) {
+function celebrateWords(wordsList) {
   if (autocheck !== 'word') return;
-  if (cells.length < 2) return;
-  if (!cells.every(([r, c]) => playerGrid[r][c].letter)) return;
-  if (!cells.every(([r, c]) => playerGrid[r][c].letter === answers[`${r},${c}`])) return;
-  const wordKey = cells.map(([r, c]) => `${r},${c}`).join('|');
-  if (celebratedWords.has(wordKey)) return;
-  celebratedWords.add(wordKey);
 
-  // Mark cells as validated (locked)
-  for (const [r, c] of cells) validatedCells.add(`${r},${c}`);
+  // Filter to only valid, new, complete correct words
+  const toAnimate = [];
+  for (const cells of wordsList) {
+    if (cells.length < 2) continue;
+    if (!cells.every(([r, c]) => playerGrid[r][c].letter)) continue;
+    if (!cells.every(([r, c]) => playerGrid[r][c].letter === answers[`${r},${c}`])) continue;
+    const wordKey = cells.map(([r, c]) => `${r},${c}`).join('|');
+    if (celebratedWords.has(wordKey)) continue;
+    celebratedWords.add(wordKey);
+    for (const [r, c] of cells) validatedCells.add(`${r},${c}`);
+    toAnimate.push(cells);
+  }
+
+  if (toAnimate.length === 0) return;
+
+  // Single renderGrid call for all validated words
   renderGrid();
 
   const table = document.querySelector('table.crossword');
   if (!table) return;
 
-  // Sparkle animation on each letter
-  cells.forEach(([r, c], i) => {
-    setTimeout(() => {
-      const row = table.rows[r];
-      if (!row) return;
-      const td = row.cells[c];
-      if (!td) return;
-      td.classList.add('word-found');
-      td.addEventListener('animationend', () => td.classList.remove('word-found'), { once: true });
-    }, i * 100);
-  });
-
-  // Carapace sliding animation
-  launchCarapace(cells, table);
+  // Launch sparkle + carapace for each word simultaneously
+  for (const cells of toAnimate) {
+    cells.forEach(([r, c], i) => {
+      setTimeout(() => {
+        const row = table.rows[r];
+        if (!row) return;
+        const td = row.cells[c];
+        if (!td) return;
+        td.classList.add('word-found');
+        td.addEventListener('animationend', () => td.classList.remove('word-found'), { once: true });
+      }, i * 100);
+    });
+    launchCarapace(cells, table);
+  }
 }
 
 // Preload carapace image once
