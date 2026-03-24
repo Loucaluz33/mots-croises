@@ -236,6 +236,10 @@
   table.crossword td.pending-letter {
     color: #1a4fc7;
   }
+  table.crossword td.dotted-top { border-top-style: dashed !important; }
+  table.crossword td.dotted-right { border-right-style: dashed !important; }
+  table.crossword td.dotted-bottom { border-bottom-style: dashed !important; }
+  table.crossword td.dotted-left { border-left-style: dashed !important; }
 
   @keyframes sparkle {
     0%   { background: white; color: #1a1a2e; transform: scale(1); }
@@ -478,7 +482,8 @@ function loadPuzzle(data) {
       playerGrid[r][c] = {
         black: data.grid[r][c].black,
         number: data.grid[r][c].number || 0,
-        letter: ''
+        letter: '',
+        dotted: data.grid[r][c].dotted || null
       };
     }
   }
@@ -584,6 +589,14 @@ function renderGrid() {
           td.appendChild(ns);
         }
         if (cell.letter) td.appendChild(document.createTextNode(cell.letter));
+
+        // Dotted borders for acronyms/sigles
+        if (cell.dotted) {
+          if (cell.dotted.top) td.classList.add('dotted-top');
+          if (cell.dotted.right) td.classList.add('dotted-right');
+          if (cell.dotted.bottom) td.classList.add('dotted-bottom');
+          if (cell.dotted.left) td.classList.add('dotted-left');
+        }
 
         if (selectedCell && selectedCell[0] === r && selectedCell[1] === c) {
           td.classList.add('selected');
@@ -756,8 +769,8 @@ function renderClueDir(dir, containerId, clueMap) {
     item.dataset.number = num;
 
     const cells = getWordCells(entry.row, entry.col, dir);
-    const allFilled = cells.every(([cr, cc]) => playerGrid[cr][cc].letter !== '');
-    if (allFilled) item.classList.add('completed');
+    const allCorrect = cells.length > 0 && cells.every(([cr, cc]) => playerGrid[cr][cc].letter && playerGrid[cr][cc].letter === answers[`${cr},${cc}`]);
+    if (allCorrect) item.classList.add('completed');
 
     item.innerHTML = `
       <span class="clue-num">${num}.</span>
