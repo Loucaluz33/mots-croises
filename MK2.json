@@ -89,7 +89,7 @@
       },
       {
         "black": false,
-        "letter": "E",
+        "letter": "R",
         "number": 0
       },
       {
@@ -546,7 +546,7 @@
         "row": 1,
         "col": 0,
         "length": 6,
-        "answer": "OLIMAE"
+        "answer": "OLIMAR"
       },
       {
         "number": 10,
@@ -724,7 +724,7 @@
         "row": 0,
         "col": 5,
         "length": 2,
-        "answer": "UE"
+        "answer": "UR"
       },
       {
         "number": 7,
