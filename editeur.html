@@ -126,10 +126,11 @@
   table.crossword td.highlight-word {
     background: #e8f0fe;
   }
-  table.crossword td.dotted-top { border-top-style: dashed !important; }
-  table.crossword td.dotted-right { border-right-style: dashed !important; }
-  table.crossword td.dotted-bottom { border-bottom-style: dashed !important; }
-  table.crossword td.dotted-left { border-left-style: dashed !important; }
+  table.crossword td.dotted-top { border-top: 2px dashed #555 !important; }
+  table.crossword td.dotted-right { border-right: 2px dashed #555 !important; }
+  table.crossword td.dotted-bottom { border-bottom: 2px dashed #555 !important; }
+  table.crossword td.dotted-left { border-left: 2px dashed #555 !important; }
+  table.crossword.dotted-mode td { cursor: crosshair; }
 
   /* Tools */
   .tool-group { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -446,7 +447,7 @@ function getWordCells(r, c, dir) {
 function renderGrid() {
   const container = document.getElementById('gridContainer');
   const table = document.createElement('table');
-  table.className = 'crossword';
+  table.className = 'crossword' + (currentTool === 'dotted' ? ' dotted-mode' : '');
 
   for (let r = 0; r < rows; r++) {
     const tr = document.createElement('tr');
@@ -494,20 +495,22 @@ function renderGrid() {
       td.addEventListener('mousedown', (e) => {
         if (currentTool !== 'dotted') return;
         e.preventDefault();
+        e.stopPropagation();
         const rect = td.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         const w = rect.width;
         const h = rect.height;
-        const margin = 10; // px zone near edge
 
+        // Determine closest edge
+        const dTop = y, dBottom = h - y, dLeft = x, dRight = w - x;
+        const minDist = Math.min(dTop, dBottom, dLeft, dRight);
         let edge = null;
-        if (y < margin) edge = 'top';
-        else if (y > h - margin) edge = 'bottom';
-        else if (x < margin) edge = 'left';
-        else if (x > w - margin) edge = 'right';
+        if (minDist === dTop) edge = 'top';
+        else if (minDist === dBottom) edge = 'bottom';
+        else if (minDist === dLeft) edge = 'left';
+        else edge = 'right';
 
-        if (!edge) return;
         toggleDottedEdge(r, c, edge);
       });
       tr.appendChild(td);
