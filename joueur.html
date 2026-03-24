@@ -1194,13 +1194,19 @@ function shareToDiscord() {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   const timeStr = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  const gridName = puzzle.title || 'Sans titre';
+  // Nom de la grille depuis le paramètre URL (ex: MK.json -> MK)
+  const params = new URLSearchParams(window.location.search);
+  const grilleParam = params.get('grille') || '';
+  const gridName = grilleParam ? grilleParam.replace(/\.json$/i, '') : (puzzle.title || 'Sans titre');
+  const gridLink = grilleParam
+    ? `https://loucaluz33.github.io/mots-croises/joueur.html?grille=${encodeURIComponent(grilleParam)}`
+    : 'https://loucaluz33.github.io/mots-croises/';
 
   let text = `🧩 J'ai fini la grille "${gridName}" de mots croisés de Loucaluz !\n`;
   text += `⏱️ Temps : ${timeStr}\n`;
   text += `🔍 Cases révélées : ${revealedCells.size}\n`;
   text += `💡 Mots révélés : ${revealedWordsCount}\n`;
-  text += `\n🎮 Joue toi aussi → https://loucaluz33.github.io/mots-croises/`;
+  text += `\n🎮 Joue toi aussi → ${gridLink}`;
 
   navigator.clipboard.writeText(text).then(() => {
     const el = document.getElementById('shareCopied');
