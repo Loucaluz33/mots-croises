@@ -1199,7 +1199,8 @@ function shareToDiscord() {
   let text = `🧩 J'ai fini la grille "${gridName}" de mots croisés de Loucaluz !\n`;
   text += `⏱️ Temps : ${timeStr}\n`;
   text += `🔍 Cases révélées : ${revealedCells.size}\n`;
-  text += `💡 Mots révélés : ${revealedWordsCount}`;
+  text += `💡 Mots révélés : ${revealedWordsCount}\n`;
+  text += `\n🎮 Joue toi aussi → https://loucaluz33.github.io/mots-croises/`;
 
   navigator.clipboard.writeText(text).then(() => {
     const el = document.getElementById('shareCopied');
