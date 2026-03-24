@@ -278,35 +278,90 @@
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.55);
     z-index: 1000;
     align-items: center;
     justify-content: center;
   }
   .victory-overlay.show { display: flex; }
   .victory-box {
-    background: white;
-    border-radius: 16px;
-    padding: 40px;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+    border-radius: 20px;
+    padding: 44px 48px;
     text-align: center;
-    max-width: 450px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 480px;
+    width: 90vw;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
   }
-  .victory-box h2 { font-size: 2em; margin-bottom: 12px; color: #2ecc71; }
-  .victory-box p { color: #666; margin-bottom: 8px; }
-  .victory-box .victory-time { font-size: 1.5em; font-weight: 700; color: #1a1a2e; margin: 12px 0; }
-  .victory-box button {
-    margin-top: 16px;
-    padding: 10px 30px;
+  .victory-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #2ecc71, #4a6cf7, #f39c12, #e74c3c);
+  }
+  .victory-emoji { font-size: 3.5em; margin-bottom: 8px; }
+  .victory-box h2 {
+    font-size: 2.2em;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .victory-box .victory-subtitle {
+    color: #666;
+    font-size: 1.05em;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .victory-stats {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 20px 0 24px;
+    flex-wrap: wrap;
+  }
+  .victory-stat {
+    background: #f0f4ff;
+    border-radius: 12px;
+    padding: 14px 20px;
+    min-width: 120px;
+    flex: 1;
+  }
+  .victory-stat .stat-icon { font-size: 1.4em; margin-bottom: 4px; }
+  .victory-stat .stat-value { font-size: 1.5em; font-weight: 800; color: #1a1a2e; }
+  .victory-stat .stat-label { font-size: 0.78em; color: #888; margin-top: 2px; }
+  .victory-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .victory-buttons button {
+    padding: 12px 28px;
     border: none;
-    background: #4a6cf7;
-    color: white;
-    border-radius: 8px;
-    font-size: 1em;
-    font-weight: 600;
+    border-radius: 10px;
+    font-size: 0.95em;
+    font-weight: 700;
     cursor: pointer;
     font-family: inherit;
+    transition: transform 0.15s, box-shadow 0.15s;
   }
+  .victory-buttons button:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+  .btn-share { background: linear-gradient(135deg, #5865F2, #4752c4); color: white; }
+  .btn-close-victory { background: #e8e8e8; color: #333; }
+  .share-copied {
+    color: #2ecc71;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .share-copied.show { opacity: 1; }
 
   /* ===== NOTIFICATION ===== */
   .notification {
@@ -403,11 +458,31 @@
 <!-- Victory -->
 <div class="victory-overlay" id="victoryOverlay">
   <div class="victory-box">
+    <div class="victory-emoji">🎉</div>
     <h2>Bravo !</h2>
-    <p>Vous avez terminé la grille !</p>
-    <div class="victory-time" id="victoryTime">00:00</div>
-    <p id="victoryStats"></p>
-    <button onclick="closeVictory()">Fermer</button>
+    <p class="victory-subtitle">Tu as terminé cette grille de mots croisés !</p>
+    <div class="victory-stats">
+      <div class="victory-stat">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-value" id="victoryTime">00:00</div>
+        <div class="stat-label">Temps</div>
+      </div>
+      <div class="victory-stat">
+        <div class="stat-icon">🔍</div>
+        <div class="stat-value" id="victoryRevealedCells">0</div>
+        <div class="stat-label">Cases révélées</div>
+      </div>
+      <div class="victory-stat">
+        <div class="stat-icon">💡</div>
+        <div class="stat-value" id="victoryRevealedWords">0</div>
+        <div class="stat-label">Mots révélés</div>
+      </div>
+    </div>
+    <div class="victory-buttons">
+      <button class="btn-share" onclick="shareToDiscord()">📋 Partager</button>
+      <button class="btn-close-victory" onclick="closeVictory()">Fermer</button>
+    </div>
+    <div class="share-copied" id="shareCopied">✅ Copié dans le presse-papiers !</div>
   </div>
 </div>
 
@@ -425,6 +500,7 @@ let timerInterval = null;
 let seconds = 0;
 let solved = false;
 let revealedCells = new Set();
+let revealedWordsCount = 0;
 let wrongCells = new Set();
 let checkedCells = new Set();
 let celebratedWords = new Set();
@@ -464,6 +540,7 @@ function loadPuzzle(data) {
   cols = data.size.cols;
   solved = false;
   revealedCells = new Set();
+  revealedWordsCount = 0;
   wrongCells = new Set();
   checkedCells = new Set();
   celebratedWords = new Set();
@@ -1012,6 +1089,7 @@ function revealWord() {
       wrongCells.delete(key);
     }
   }
+  revealedWordsCount++;
   renderGrid();
   renderClues();
   updateProgress();
@@ -1054,6 +1132,7 @@ function resetGrid() {
     for (let c = 0; c < cols; c++)
       if (!playerGrid[r][c].black) playerGrid[r][c].letter = '';
   revealedCells.clear();
+  revealedWordsCount = 0;
   wrongCells.clear();
   checkedCells.clear();
   celebratedWords.clear();
@@ -1100,13 +1179,36 @@ function checkVictory() {
   if (timerInterval) clearInterval(timerInterval);
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
-  document.getElementById('victoryTime').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  document.getElementById('victoryStats').textContent = `${revealedCells.size} case(s) révélée(s)`;
+  const timeStr = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('victoryTime').textContent = timeStr;
+  document.getElementById('victoryRevealedCells').textContent = revealedCells.size;
+  document.getElementById('victoryRevealedWords').textContent = revealedWordsCount;
   document.getElementById('victoryOverlay').classList.add('show');
 }
 
 function closeVictory() {
   document.getElementById('victoryOverlay').classList.remove('show');
+}
+
+function shareToDiscord() {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  const timeStr = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const gridName = puzzle.title || 'Sans titre';
+
+  let text = `🧩 J'ai fini la grille "${gridName}" de mots croisés de Loucaluz !\n`;
+  text += `⏱️ Temps : ${timeStr}\n`;
+  text += `🔍 Cases révélées : ${revealedCells.size}\n`;
+  text += `💡 Mots révélés : ${revealedWordsCount}`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('shareCopied');
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }).catch(() => {
+    // Fallback
+    prompt('Copie ce texte pour le partager :', text);
+  });
 }
 
 // ========== NOTIFICATION ==========
