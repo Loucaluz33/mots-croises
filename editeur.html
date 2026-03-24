@@ -131,6 +131,8 @@
   table.crossword td.dotted-bottom { border-bottom: 2px dashed #555 !important; }
   table.crossword td.dotted-left { border-left: 2px dashed #555 !important; }
   table.crossword.dotted-mode td { cursor: crosshair; }
+  table.crossword td.dotted-first-pick { background: #e8daef !important; }
+  .tool-btn.dotted-active { border-color: #8e44ad !important; background: #8e44ad !important; color: white !important; }
 
   /* Tools */
   .tool-group { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -255,13 +257,13 @@
     <div class="panel">
       <h2>Outils</h2>
       <div class="tool-group">
-        <button class="tool-btn active" id="toolBlack" onclick="setTool('black')">Cases noires</button>
         <button class="tool-btn" id="toolLetter" onclick="setTool('letter')">Lettres</button>
-        <button class="tool-btn" id="toolDotted" onclick="setTool('dotted')">Pointillés</button>
-      </div>
-      <div class="symmetry-toggle">
-        <input type="checkbox" id="chkSymmetry" checked>
-        <label for="chkSymmetry" style="margin:0">Symétrie centrale</label>
+        <button class="tool-btn" id="toolDotted" onclick="toggleDottedMode()">Pointillés</button>
+        <button class="tool-btn active" id="toolBlack" onclick="setTool('black')">Cases noires</button>
+        <div class="symmetry-toggle" style="margin:0;">
+          <input type="checkbox" id="chkSymmetry" checked>
+          <label for="chkSymmetry" style="margin:0">Symétrie</label>
+        </div>
       </div>
       <p class="mirror-info">La case miroir sera automatiquement noircie/blanchie</p>
       <hr style="margin: 12px 0; border: none; border-top: 1px solid #eee;">
@@ -480,7 +482,12 @@ function renderGrid() {
         if (cell.dotted.left) td.classList.add('dotted-left');
       }
 
-      if (selectedCell && selectedCell[0] === r && selectedCell[1] === c) {
+      // Dotted mode: highlight first picked cell
+      if (dottedFirstCell && dottedFirstCell[0] === r && dottedFirstCell[1] === c) {
+        td.classList.add('dotted-first-pick');
+      }
+
+      if (selectedCell && selectedCell[0] === r && selectedCell[1] === c && !dottedMode) {
         td.classList.add('selected');
       } else if (selectedCell && currentTool === 'letter') {
         const wordCells = getWordCells(selectedCell[0], selectedCell[1], currentDirection);
@@ -490,29 +497,6 @@ function renderGrid() {
       }
 
       td.addEventListener('click', () => onCellClick(r, c));
-
-      // Edge click detection for dotted mode
-      td.addEventListener('mousedown', (e) => {
-        if (currentTool !== 'dotted') return;
-        e.preventDefault();
-        e.stopPropagation();
-        const rect = td.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const w = rect.width;
-        const h = rect.height;
-
-        // Determine closest edge
-        const dTop = y, dBottom = h - y, dLeft = x, dRight = w - x;
-        const minDist = Math.min(dTop, dBottom, dLeft, dRight);
-        let edge = null;
-        if (minDist === dTop) edge = 'top';
-        else if (minDist === dBottom) edge = 'bottom';
-        else if (minDist === dLeft) edge = 'left';
-        else edge = 'right';
-
-        toggleDottedEdge(r, c, edge);
-      });
       tr.appendChild(td);
     }
     table.appendChild(tr);
@@ -525,36 +509,66 @@ function renderGrid() {
 }
 
 // ========== TOOLS ==========
+let dottedMode = false;
+let dottedFirstCell = null;
+
 function setTool(tool) {
+  // Exit dotted mode if switching to another tool
+  if (dottedMode) exitDottedMode();
   currentTool = tool;
   document.getElementById('toolBlack').classList.toggle('active', tool === 'black');
   document.getElementById('toolLetter').classList.toggle('active', tool === 'letter');
-  document.getElementById('toolDotted').classList.toggle('active', tool === 'dotted');
 
   const bar = document.getElementById('modeBar');
   if (tool === 'black') {
     bar.className = 'mode-bar';
+    bar.style.background = '';
+    bar.style.color = '';
     bar.innerHTML = 'Mode : <strong>Cases noires</strong> — Cliquez sur les cases pour placer/retirer les cases noires';
-  } else if (tool === 'dotted') {
-    bar.className = 'mode-bar';
-    bar.style.background = '#e8daef';
-    bar.style.color = '#6c3483';
-    bar.innerHTML = 'Mode : <strong>Pointillés</strong> — Cliquez près d\'une arête pour la mettre en pointillés (acronymes, sigles)';
   } else {
     bar.className = 'mode-bar letter-mode';
     bar.style.background = '';
     bar.style.color = '';
     bar.innerHTML = 'Mode : <strong>Lettres</strong> — Cliquez sur une case puis tapez. <kbd>Tab</kbd> ou clic pour changer direction. <kbd>Espace</kbd> = changer direction.';
   }
-  if (tool !== 'dotted') { bar.style.background = ''; bar.style.color = ''; }
   renderGrid();
 }
 
+function toggleDottedMode() {
+  if (dottedMode) {
+    exitDottedMode();
+    return;
+  }
+  dottedMode = true;
+  dottedFirstCell = null;
+  currentTool = 'dotted';
+  document.getElementById('toolBlack').classList.remove('active');
+  document.getElementById('toolLetter').classList.remove('active');
+  document.getElementById('toolDotted').classList.add('dotted-active');
+
+  const bar = document.getElementById('modeBar');
+  bar.className = 'mode-bar';
+  bar.style.background = '#e8daef';
+  bar.style.color = '#6c3483';
+  bar.innerHTML = 'Mode : <strong>Pointillés</strong> — Cliquez sur une 1ère case, puis sur une case adjacente pour basculer l\'arête en pointillés. Recliquez "Pointillés" pour quitter.';
+  renderGrid();
+}
+
+function exitDottedMode() {
+  dottedMode = false;
+  dottedFirstCell = null;
+  currentTool = 'black';
+  document.getElementById('toolDotted').classList.remove('dotted-active');
+  setTool('black');
+}
+
 function onCellClick(r, c) {
+  if (dottedMode) {
+    handleDottedClick(r, c);
+    return;
+  }
   if (currentTool === 'black') {
     toggleBlack(r, c);
-  } else if (currentTool === 'dotted') {
-    // Handled by onCellMouseDown with edge detection
   } else {
     if (selectedCell && selectedCell[0] === r && selectedCell[1] === c) {
       currentDirection = currentDirection === 'across' ? 'down' : 'across';
@@ -563,6 +577,31 @@ function onCellClick(r, c) {
     if (!grid[r][c].black) {
       renderGrid();
     }
+  }
+}
+
+function handleDottedClick(r, c) {
+  if (dottedFirstCell === null) {
+    // Premier clic : sélectionner la case
+    dottedFirstCell = [r, c];
+    renderGrid();
+  } else {
+    const [fr, fc] = dottedFirstCell;
+    // Vérifier adjacence (horizontale ou verticale, distance = 1)
+    const dr = Math.abs(r - fr);
+    const dc = Math.abs(c - fc);
+    if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
+      // Cases adjacentes : déterminer quelle arête
+      let edge;
+      if (r < fr) edge = 'top';
+      else if (r > fr) edge = 'bottom';
+      else if (c < fc) edge = 'left';
+      else edge = 'right';
+      toggleDottedEdge(fr, fc, edge);
+    }
+    // Dans tous les cas, dé-sélectionner
+    dottedFirstCell = null;
+    renderGrid();
   }
 }
 
