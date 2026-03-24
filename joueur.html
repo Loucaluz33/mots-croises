@@ -847,101 +847,121 @@ function celebrateIfCorrect(cells) {
   launchCarapace(cells, table);
 }
 
+// Preload carapace image once
+const carapaceImg = new Image();
+carapaceImg.src = 'carapace.webp';
+let carapaceReady = false;
+carapaceImg.onload = () => { carapaceReady = true; };
+
+// Preload coin sound once
+let coinSound = null;
+try { coinSound = new Audio('coin_sound.wav'); coinSound.load(); } catch(e) {}
+
 function launchCarapace(cells, table) {
-  const tds = cells.map(([r, c]) => table.rows[r].cells[c]);
+  if (cells.length < 2) return; // No animation for single-cell words
 
-  const img = document.createElement('img');
-  img.src = 'carapace.webp';
-  const cellSize = tds[0].getBoundingClientRect().width;
-  const carapaceSize = cellSize * 0.7;
-  img.style.cssText = `
-    position: absolute;
-    width: ${carapaceSize}px;
-    height: ${carapaceSize}px;
-    object-fit: contain;
-    pointer-events: none;
-    z-index: 100;
-    will-change: transform;
-  `;
+  const tds = cells.map(([r, c]) => table.rows[r] && table.rows[r].cells[c]).filter(Boolean);
+  if (tds.length < 2) return;
 
-  const gridContainer = document.getElementById('gridContainer');
-  const containerRect = gridContainer.getBoundingClientRect();
-  gridContainer.style.position = 'relative';
-  gridContainer.appendChild(img);
+  function startAnimation() {
+    const img = document.createElement('img');
+    img.src = carapaceImg.src;
+    const cellSize = tds[0].getBoundingClientRect().width;
+    const carapaceSize = cellSize * 0.7;
+    img.style.cssText = `
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: ${carapaceSize}px;
+      height: ${carapaceSize}px;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 100;
+      will-change: transform;
+    `;
 
-  // Waypoints: center of each cell relative to the container
-  const waypoints = tds.map(td => {
-    const r = td.getBoundingClientRect();
-    return {
-      x: r.left + r.width / 2 - containerRect.left - carapaceSize / 2,
-      y: r.top + r.height / 2 - containerRect.top - carapaceSize / 2
-    };
-  });
+    const gridContainer = document.getElementById('gridContainer');
+    const containerRect = gridContainer.getBoundingClientRect();
+    gridContainer.style.position = 'relative';
+    gridContainer.appendChild(img);
 
-  // Full path: forward + backward
-  const forwardWaypoints = [...waypoints];
-  const backwardWaypoints = [...waypoints].reverse();
-  const allWaypoints = [...forwardWaypoints, ...backwardWaypoints];
+    // Compute waypoints at launch time
+    const waypoints = tds.map(td => {
+      const r = td.getBoundingClientRect();
+      return {
+        x: r.left + r.width / 2 - containerRect.left - carapaceSize / 2,
+        y: r.top + r.height / 2 - containerRect.top - carapaceSize / 2
+      };
+    });
 
-  // 100ms per cell segment, same speed as sparkle
-  const msPerSegment = 100;
-  const forwardSegments = forwardWaypoints.length - 1;
-  const totalSegments = allWaypoints.length - 1;
-  const totalDuration = totalSegments * msPerSegment;
+    // Full path: forward then backward
+    const allWaypoints = [...waypoints, ...[...waypoints].reverse()];
 
-  const startTime = performance.now();
-  let bounceSoundPlayed = false;
-
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
-  }
-
-  function animate(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / totalDuration, 1);
-
-    // Which segment are we in?
-    const exactSegment = progress * totalSegments;
-    const segIndex = Math.min(Math.floor(exactSegment), totalSegments - 1);
-    const segT = exactSegment - segIndex;
-
-    const from = allWaypoints[segIndex];
-    const to = allWaypoints[segIndex + 1];
-    const x = lerp(from.x, to.x, segT);
-    const y = lerp(from.y, to.y, segT);
-
-    // Bounce scale at the turning point
+    const msPerSegment = 100;
+    const forwardSegments = waypoints.length - 1;
+    const totalSegments = allWaypoints.length - 1;
+    if (totalSegments <= 0) { img.remove(); return; }
+    const totalDuration = totalSegments * msPerSegment;
     const turningPoint = forwardSegments / totalSegments;
-    const distFromTurn = Math.abs(progress - turningPoint);
-    const bounceZone = 0.06;
-    let scale = 1;
-    if (distFromTurn < bounceZone) {
-      scale = 1 + 0.3 * (1 - distFromTurn / bounceZone);
-      if (!bounceSoundPlayed) {
-        bounceSoundPlayed = true;
-        new Audio('coin_sound.wav').play().catch(() => {});
+
+    let startTime = null;
+    let bounceSoundPlayed = false;
+
+    function animate(now) {
+      if (startTime === null) startTime = now;
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / totalDuration, 1);
+
+      const exactSegment = progress * totalSegments;
+      const segIndex = Math.min(Math.floor(exactSegment), totalSegments - 1);
+      const segT = exactSegment - segIndex;
+
+      const from = allWaypoints[segIndex];
+      const to = allWaypoints[Math.min(segIndex + 1, allWaypoints.length - 1)];
+      const x = from.x + (to.x - from.x) * segT;
+      const y = from.y + (to.y - from.y) * segT;
+
+      // Bounce scale at turning point
+      const distFromTurn = Math.abs(progress - turningPoint);
+      const bounceZone = 0.06;
+      let scale = 1;
+      if (distFromTurn < bounceZone) {
+        scale = 1 + 0.3 * (1 - distFromTurn / bounceZone);
+        if (!bounceSoundPlayed) {
+          bounceSoundPlayed = true;
+          if (coinSound) {
+            const snd = coinSound.cloneNode();
+            snd.volume = 0.5;
+            snd.play().catch(() => {});
+          }
+        }
+      }
+
+      // Flip horizontally on the way back
+      const flipX = progress > turningPoint ? -1 : 1;
+
+      img.style.transform = `translate(${x}px, ${y}px) scaleX(${scale * flipX}) scaleY(${scale})`;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        img.remove();
       }
     }
 
-    // Flip on the way back
-    const flipX = progress > turningPoint ? -1 : 1;
-
-    img.style.transform = `translate(${x}px, ${y}px) scale(${scale * flipX}, ${scale})`;
-    img.style.left = '0';
-    img.style.top = '0';
-
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      img.remove();
-    }
+    // Set initial position then start
+    img.style.transform = `translate(${waypoints[0].x}px, ${waypoints[0].y}px)`;
+    requestAnimationFrame(animate);
   }
 
-  // Position using transform from the start
-  img.style.left = '0';
-  img.style.top = '0';
-  img.style.transform = `translate(${waypoints[0].x}px, ${waypoints[0].y}px)`;
-  requestAnimationFrame(animate);
+  // Wait for image to be ready before animating
+  if (carapaceReady) {
+    startAnimation();
+  } else {
+    carapaceImg.onload = () => { carapaceReady = true; startAnimation(); };
+    // Fallback: if image never loads, skip after 500ms
+    setTimeout(() => { if (!carapaceReady) { carapaceReady = true; } }, 500);
+  }
 }
 
 // ========== REVEAL ==========
