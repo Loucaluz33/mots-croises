@@ -241,6 +241,20 @@
   table.crossword td.dotted-bottom { border-bottom-style: dashed !important; }
   table.crossword td.dotted-left { border-left-style: dashed !important; }
 
+  /* French-style grid: smaller cells for larger grids */
+  table.crossword.french td, table.crossword.french th {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9em;
+  }
+  table.crossword.french th {
+    font-size: 0.65em;
+    padding: 0;
+  }
+  table.crossword.french td .cell-number {
+    font-size: 0.4em;
+  }
+
   @keyframes sparkle {
     0%   { background: white; color: #1a1a2e; transform: scale(1); }
     20%  { background: #ffd700; color: white; transform: scale(1.12); box-shadow: 0 0 12px rgba(255,215,0,0.7); }
@@ -270,7 +284,7 @@
   .clue-item.active { background: #d4e4ff; font-weight: 600; }
   .clue-item.completed { color: #999; }
   .clue-item.completed .clue-num { color: #2ecc71; }
-  .clue-num { font-weight: 700; color: #4a6cf7; min-width: 26px; flex-shrink: 0; }
+  .clue-num { font-weight: 700; color: #4a6cf7; min-width: 36px; flex-shrink: 0; }
   .clue-text { flex: 1; }
 
   /* ===== VICTORY ===== */
@@ -508,6 +522,18 @@ let validatedCells = new Set();
 let answers = {};
 let acrossClues = {};
 let downClues = {};
+let frenchStyle = false;
+let hasAnswers = false;
+
+function toRoman(n) {
+  const vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+  const syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+  let result = '';
+  for (let i = 0; i < vals.length; i++) {
+    while (n >= vals[i]) { result += syms[i]; n -= vals[i]; }
+  }
+  return result;
+}
 
 // ========== FILE ==========
 function openFile() {
@@ -546,11 +572,16 @@ function loadPuzzle(data) {
   celebratedWords = new Set();
   validatedCells = new Set();
 
+  frenchStyle = data.style === 'french';
+  hasAnswers = false;
   answers = {};
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++)
-      if (!data.grid[r][c].black)
-        answers[`${r},${c}`] = (data.grid[r][c].letter || '').toUpperCase();
+      if (!data.grid[r][c].black) {
+        const letter = (data.grid[r][c].letter || '').toUpperCase();
+        answers[`${r},${c}`] = letter;
+        if (letter) hasAnswers = true;
+      }
 
   playerGrid = [];
   for (let r = 0; r < rows; r++) {
@@ -590,6 +621,19 @@ function loadPuzzle(data) {
   if (timerInterval) clearInterval(timerInterval);
   seconds = 0;
   timerInterval = setInterval(tick, 1000);
+
+  // Hide autocheck/reveal controls when no answers available
+  const checkBtns = document.querySelectorAll('.toolbar button');
+  checkBtns.forEach(btn => {
+    if (btn.textContent.includes('Révéler') || btn.textContent.includes('Vérifier')) {
+      btn.style.display = hasAnswers ? '' : 'none';
+    }
+  });
+  const autocheckGroup = document.querySelector('.autocheck-group');
+  const autocheckLabel = document.querySelector('.autocheck-label');
+  if (autocheckGroup) autocheckGroup.style.display = hasAnswers ? '' : 'none';
+  if (autocheckLabel) autocheckLabel.style.display = hasAnswers ? '' : 'none';
+  if (!hasAnswers) autocheck = 'none';
 
   renderGrid();
   renderClues();
@@ -645,12 +689,32 @@ function getWordStart(r, c, dir) {
 function renderGrid() {
   const container = document.getElementById('gridContainer');
   const table = document.createElement('table');
-  table.className = 'crossword';
+  table.className = 'crossword' + (frenchStyle ? ' french' : '');
 
   const highlightCells = selectedCell ? getWordCells(selectedCell[0], selectedCell[1], currentDirection) : [];
 
+  // French style: add column header row
+  if (frenchStyle) {
+    const thead = document.createElement('tr');
+    const corner = document.createElement('th');
+    corner.className = 'corner';
+    thead.appendChild(corner);
+    for (let c = 0; c < cols; c++) {
+      const th = document.createElement('th');
+      th.textContent = c + 1;
+      thead.appendChild(th);
+    }
+    table.appendChild(thead);
+  }
+
   for (let r = 0; r < rows; r++) {
     const tr = document.createElement('tr');
+    // French style: add row header
+    if (frenchStyle) {
+      const th = document.createElement('th');
+      th.textContent = toRoman(r + 1);
+      tr.appendChild(th);
+    }
     for (let c = 0; c < cols; c++) {
       const td = document.createElement('td');
       const cell = playerGrid[r][c];
@@ -814,16 +878,29 @@ function moveToCell(r, c) {
 }
 
 // ========== CURRENT CLUE ==========
+function getClueNumber(r, c, dir) {
+  if (frenchStyle) {
+    return dir === 'across' ? r + 1 : c + 1;
+  }
+  const [sr, sc] = getWordStart(r, c, dir);
+  return playerGrid[sr][sc].number;
+}
+
+function formatClueNumber(num, dir) {
+  if (frenchStyle && dir === 'across') return toRoman(num);
+  return String(num);
+}
+
 function updateCurrentClue() {
   if (!selectedCell) return;
   const [r, c] = selectedCell;
-  const [sr, sc] = getWordStart(r, c, currentDirection);
-  const num = playerGrid[sr][sc].number;
+  const num = getClueNumber(r, c, currentDirection);
   const dirLabel = currentDirection === 'across' ? 'H' : 'V';
   const clueMap = currentDirection === 'across' ? acrossClues : downClues;
   const clue = clueMap[num];
+  const label = formatClueNumber(num, currentDirection);
 
-  document.getElementById('currentClueDir').textContent = `${num} ${dirLabel}.`;
+  document.getElementById('currentClueDir').textContent = `${label} ${dirLabel}.`;
   document.getElementById('currentClueText').textContent = clue ? clue.clue : '';
 }
 
@@ -849,8 +926,9 @@ function renderClueDir(dir, containerId, clueMap) {
     const allCorrect = cells.length > 0 && cells.every(([cr, cc]) => playerGrid[cr][cc].letter && playerGrid[cr][cc].letter === answers[`${cr},${cc}`]);
     if (allCorrect) item.classList.add('completed');
 
+    const displayNum = formatClueNumber(num, dir);
     item.innerHTML = `
-      <span class="clue-num">${num}.</span>
+      <span class="clue-num">${displayNum}.</span>
       <span class="clue-text">${entry.clue || '—'}</span>
     `;
     item.addEventListener('click', () => {
@@ -867,8 +945,7 @@ function renderClueDir(dir, containerId, clueMap) {
 function highlightActiveClue() {
   document.querySelectorAll('.clue-item').forEach(el => el.classList.remove('active'));
   if (!selectedCell) return;
-  const [sr, sc] = getWordStart(selectedCell[0], selectedCell[1], currentDirection);
-  const num = playerGrid[sr][sc].number;
+  const num = getClueNumber(selectedCell[0], selectedCell[1], currentDirection);
   const item = document.querySelector(`.clue-item[data-dir="${currentDirection}"][data-number="${num}"]`);
   if (item) {
     item.classList.add('active');
@@ -1149,6 +1226,20 @@ function resetGrid() {
 
 // ========== PROGRESS ==========
 function updateProgress() {
+  if (!hasAnswers) {
+    // Count filled cells instead
+    let filled = 0, total = 0;
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++)
+        if (!playerGrid[r][c].black) {
+          total++;
+          if (playerGrid[r][c].letter) filled++;
+        }
+    const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = `${pct}%`;
+    document.getElementById('progressText').textContent = `${filled}/${total} cases (${pct}%)`;
+    return;
+  }
   // Count words found vs total words
   const allClues = [...Object.values(acrossClues), ...Object.values(downClues)];
   let found = 0;
