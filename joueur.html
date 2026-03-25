@@ -1009,9 +1009,11 @@ function celebrateWords(wordsList) {
   for (const cells of toAnimate) {
     cells.forEach(([r, c], i) => {
       setTimeout(() => {
-        const row = table.rows[r];
+        const rOffset = frenchStyle ? 1 : 0;
+        const cOffset = frenchStyle ? 1 : 0;
+        const row = table.rows[r + rOffset];
         if (!row) return;
-        const td = row.cells[c];
+        const td = row.cells[c + cOffset];
         if (!td) return;
         td.classList.add('word-found');
         td.addEventListener('animationend', () => td.classList.remove('word-found'), { once: true });
@@ -1034,7 +1036,9 @@ try { coinSound = new Audio('coin_sound.wav'); coinSound.load(); } catch(e) {}
 function launchCarapace(cells, table) {
   if (cells.length < 2) return; // No animation for single-cell words
 
-  const tds = cells.map(([r, c]) => table.rows[r] && table.rows[r].cells[c]).filter(Boolean);
+  const rOff = frenchStyle ? 1 : 0;
+  const cOff = frenchStyle ? 1 : 0;
+  const tds = cells.map(([r, c]) => table.rows[r + rOff] && table.rows[r + rOff].cells[c + cOff]).filter(Boolean);
   if (tds.length < 2) return;
 
   function startAnimation() {
