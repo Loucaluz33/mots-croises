@@ -6,6 +6,12 @@
       "runtimeExecutable": "/opt/homebrew/bin/node",
       "runtimeArgs": ["webapp/server.js"],
       "port": 3000
+    },
+    {
+      "name": "v2",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["V2/start-dev.js"],
+      "port": 5173
     }
   ]
 }

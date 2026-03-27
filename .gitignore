@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+*.db
+*.db-shm
+*.db-wal
+.vite/
+dist/
+verbicruciste/backups/
+verbicruciste/*.json
