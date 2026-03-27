@@ -100,10 +100,10 @@
 // === GRILLES DISPONIBLES ===
 // Pour ajouter une grille, ajoutez une entrée ici avec le nom du fichier JSON
 const grids = [
-  { file: 'Laclos1.json' },
   { file: 'MK.json' },
   { file: 'MK2.json' },
-  { file: 'MK3.json' }
+  { file: 'MK3.json' },
+  { file: 'Laclos1.json' }
 ];
 
 const list = document.getElementById('gridList');
@@ -112,7 +112,7 @@ const list = document.getElementById('gridList');
 Promise.all(grids.map(g =>
   fetch(g.file)
     .then(r => r.json())
-    .then(data => ({ file: g.file, title: data.onlineName || ((data.title && data.title !== 'Sans titre') ? data.title : g.file.replace('.json','')), author: data.author || '', size: data.size }))
+    .then(data => ({ file: g.file, title: (data.title && data.title !== 'Sans titre') ? data.title : g.file.replace('.json',''), author: data.author || '', size: data.size }))
     .catch(() => ({ file: g.file, title: g.file, author: '', size: null }))
 )).then(results => {
   list.innerHTML = '';

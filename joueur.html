@@ -611,7 +611,7 @@ function loadPuzzle(data) {
   document.getElementById('currentClueBar').classList.add('active');
 
   document.getElementById('headerInfo').innerHTML = `
-    <strong>${data.title || 'Sans titre'}</strong>
+    <strong>${data.onlineName || data.title || 'Sans titre'}</strong>
     ${data.author ? ` — ${data.author}` : ''}
   `;
 
@@ -1316,7 +1316,7 @@ function shareToDiscord() {
   // Nom de la grille depuis le paramètre URL (ex: MK.json -> MK)
   const params = new URLSearchParams(window.location.search);
   const grilleParam = params.get('grille') || '';
-  const gridName = grilleParam ? grilleParam.replace(/\.json$/i, '') : (puzzle.title || 'Sans titre');
+  const gridName = puzzle.onlineName || (grilleParam ? grilleParam.replace(/\.json$/i, '') : (puzzle.title || 'Sans titre'));
   const gridLink = grilleParam
     ? `https://loucaluz33.github.io/mots-croises/joueur.html?grille=${encodeURIComponent(grilleParam)}`
     : 'https://loucaluz33.github.io/mots-croises/';
