@@ -1,0 +1,2302 @@
+{
+  "format": "verbicruciste",
+  "version": 1,
+  "style": "french",
+  "title": "Laclos 1",
+  "author": "Michel Laclos",
+  "source": "Grain d'orage, Zulma, 2015",
+  "date": "2015",
+  "size": {
+    "rows": 20,
+    "cols": 20
+  },
+  "grid": [
+    [
+      {
+        "black": false,
+        "letter": "F",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "P",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "D",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "B",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "D",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "K",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "F",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "P",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "D",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "H",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "B",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "Q",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "D",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "V",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "D",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "B",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "P",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "H",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "V",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "F",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "P",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "G",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "P",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "B",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "R",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      }
+    ]
+  ],
+  "clues": {
+    "across": [
+      {
+        "number": 1,
+        "clue": "Multiplication des divisions. État revendiqué abusivement par les socialistes.",
+        "row": 0,
+        "col": 0
+      },
+      {
+        "number": 2,
+        "clue": "Étrangère à l'armée. Affranchie. Rouge américain.",
+        "row": 1,
+        "col": 0
+      },
+      {
+        "number": 3,
+        "clue": "Ne pas vouloir comprendre. Toujours en pointe. Sous la langue.",
+        "row": 2,
+        "col": 0
+      },
+      {
+        "number": 4,
+        "clue": "Rassemblement populaire. Quatre-quarts.",
+        "row": 3,
+        "col": 0
+      },
+      {
+        "number": 5,
+        "clue": "Kit en kit. En loge. Note. Ne comprennent pas que les cocottes.",
+        "row": 4,
+        "col": 0
+      },
+      {
+        "number": 6,
+        "clue": "Grammaticus. Femme agent.",
+        "row": 5,
+        "col": 0
+      },
+      {
+        "number": 7,
+        "clue": "Vœu pieux. Lettres d'Amérique. Près du nu.",
+        "row": 6,
+        "col": 0
+      },
+      {
+        "number": 8,
+        "clue": "Causa. Pour la sauce, demandez plutôt la hollandaise.",
+        "row": 7,
+        "col": 0
+      },
+      {
+        "number": 9,
+        "clue": "Agent de renseignements. Jeanne d'Arc ou Emma Bovary. Morceau de piano. À l'envers : entre moi et lui.",
+        "row": 8,
+        "col": 0
+      },
+      {
+        "number": 10,
+        "clue": "Morte au salon. Note. Et le reste… intégralement (deux mots).",
+        "row": 9,
+        "col": 0
+      },
+      {
+        "number": 11,
+        "clue": "Partie de canasta. Monté sur un bâtiment. Roupies.",
+        "row": 10,
+        "col": 1
+      },
+      {
+        "number": 12,
+        "clue": "Prépare son règne. Connaît bien. Visées.",
+        "row": 11,
+        "col": 0
+      },
+      {
+        "number": 13,
+        "clue": "Vœu pieux. Avec des Italiens sur le retour. Protectrice de charmes. Montra son front ou son estomac.",
+        "row": 12,
+        "col": 0
+      },
+      {
+        "number": 14,
+        "clue": "Ierre à Vénus. Marner. Voie d'eau. Mauvais soin.",
+        "row": 13,
+        "col": 0
+      },
+      {
+        "number": 15,
+        "clue": "Fait le crâne. Lettres d'Angleterre. Aux anges. Fait appel. Repose toujours.",
+        "row": 14,
+        "col": 0
+      },
+      {
+        "number": 16,
+        "clue": "Romans. Serrait le cou des rapins. Fruit du bide.",
+        "row": 15,
+        "col": 0
+      },
+      {
+        "number": 17,
+        "clue": "Grand chanteur jaune. Fait partie des frais. Enlevée de Phénicie ou partie du monde.",
+        "row": 16,
+        "col": 0
+      },
+      {
+        "number": 18,
+        "clue": "Atterri… très loin de chez nous. Celui-là, il est toujours d'attaque.",
+        "row": 17,
+        "col": 0
+      },
+      {
+        "number": 19,
+        "clue": "Un écraseur ! Donne un nouvel ordre mais nettement à contresens.",
+        "row": 18,
+        "col": 0
+      },
+      {
+        "number": 20,
+        "clue": "Bons à changer. Plutôt sec s'il est petit. Un set confus. Participe.",
+        "row": 19,
+        "col": 0
+      }
+    ],
+    "down": [
+      {
+        "number": 1,
+        "clue": "Ligne maritime. Un jeune homme d'un certain âge.",
+        "row": 0,
+        "col": 0
+      },
+      {
+        "number": 2,
+        "clue": "Copie non conforme. Un mouvement en faveur de la collectivité. Parti à ne pas reprendre.",
+        "row": 0,
+        "col": 1
+      },
+      {
+        "number": 3,
+        "clue": "Hélas ! Couvert de taches. Bruit de dernière heure.",
+        "row": 0,
+        "col": 2
+      },
+      {
+        "number": 4,
+        "clue": "Repose. Pointe sur les épaules. Blanchie à l'eau de mer. Des fleurs à la porte de Paris.",
+        "row": 0,
+        "col": 3
+      },
+      {
+        "number": 5,
+        "clue": "Croisé (entre autres) par la légion. Accidents de la route. Tramait et trimait à Lyon.",
+        "row": 0,
+        "col": 4
+      },
+      {
+        "number": 6,
+        "clue": "Œuvre gravée. Un rien populaire.",
+        "row": 0,
+        "col": 5
+      },
+      {
+        "number": 7,
+        "clue": "Proposition. Salut italien. Donne un ordre.",
+        "row": 0,
+        "col": 6
+      },
+      {
+        "number": 8,
+        "clue": "Se bute facilement… avec le suivant. Doublé sur une étoile. Soupe au lait. Bien appris.",
+        "row": 0,
+        "col": 7
+      },
+      {
+        "number": 9,
+        "clue": "Aura grand appétit. Se laisser glisser sans retenue jusqu'au bas de la pente.",
+        "row": 0,
+        "col": 8
+      },
+      {
+        "number": 10,
+        "clue": "Un défaut qui apparaît à l'œil nu. Pas admise. Lettres de Montesquieu. Condition des Anglais. Terme d'amour.",
+        "row": 0,
+        "col": 9
+      },
+      {
+        "number": 11,
+        "clue": "Fait du rentre-dedans. Muse musicale. Carré de terre.",
+        "row": 0,
+        "col": 10
+      },
+      {
+        "number": 12,
+        "clue": "Fragment de Cocteau. Homme d'esprits. Mars grec.",
+        "row": 0,
+        "col": 11
+      },
+      {
+        "number": 13,
+        "clue": "Base aérienne. Faisait le pont dans la marine. Elles prennent leur dîner au lit ?",
+        "row": 0,
+        "col": 12
+      },
+      {
+        "number": 14,
+        "clue": "Saisir rapidement. Elle souffle en coulisse. À l'envers : Pierre ou Paul. Alexandre ou Nicolas.",
+        "row": 1,
+        "col": 13
+      },
+      {
+        "number": 15,
+        "clue": "Blanc et noir en poésie. Préférait-il la demi-mondaine à la grande-duchesse ? Chanteuse d'opéra, et plutôt deux fois qu'une ! Prend la taille.",
+        "row": 1,
+        "col": 14
+      },
+      {
+        "number": 16,
+        "clue": "Casseur de cailloux saisonnier. Appliquée à l'étude. Pour faire sauter (deux mots).",
+        "row": 0,
+        "col": 15
+      },
+      {
+        "number": 17,
+        "clue": "Huile orientale. Donneuse de sang. Ne se bat que s'il fait froid.",
+        "row": 0,
+        "col": 16
+      },
+      {
+        "number": 18,
+        "clue": "Ne fait pas flèche de tout bois. Fixation des barrières. En activité.",
+        "row": 0,
+        "col": 17
+      },
+      {
+        "number": 19,
+        "clue": "Indicateur. Exportaient des armes et des devises. Habiller en prêtre.",
+        "row": 0,
+        "col": 18
+      },
+      {
+        "number": 20,
+        "clue": "Urfa aujourd'hui. Envoyé spécial. Classement personnel.",
+        "row": 0,
+        "col": 19
+      }
+    ]
+  },
+  "onlineName": "Laclos 1"
+}

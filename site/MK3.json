@@ -1,0 +1,543 @@
+{
+  "format": "verbicruciste",
+  "version": 2,
+  "style": "french",
+  "title": "MK3",
+  "author": "",
+  "date": "",
+  "size": {
+    "rows": 8,
+    "cols": 8
+  },
+  "grid": [
+    [
+      {
+        "black": false,
+        "letter": "M",
+        "number": 1
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 2
+      },
+      {
+        "black": false,
+        "letter": "Y",
+        "number": 3
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 4
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 5
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 6
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 7
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "A",
+        "number": 8
+      },
+      {
+        "black": false,
+        "letter": "B",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "Y",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "K",
+        "number": 9
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "B",
+        "number": 10
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "O",
+        "number": 11
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "H",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "T",
+        "number": 12
+      },
+      {
+        "black": false,
+        "letter": "U",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "T",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "O",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "C",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": false,
+        "letter": "O",
+        "number": 13
+      },
+      {
+        "black": false,
+        "letter": "K",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 14
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "Y",
+        "number": 15,
+        "dotted": {
+          "top": false,
+          "bottom": true,
+          "left": false,
+          "right": false
+        }
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 16
+      },
+      {
+        "black": false,
+        "letter": "M",
+        "number": 17
+      },
+      {
+        "black": false,
+        "letter": "D",
+        "number": 18
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "S",
+        "number": 19,
+        "dotted": {
+          "top": true,
+          "bottom": true,
+          "left": false,
+          "right": false
+        }
+      },
+      {
+        "black": false,
+        "letter": "N",
+        "number": 0
+      }
+    ],
+    [
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": true,
+        "letter": "",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 20
+      },
+      {
+        "black": false,
+        "letter": "X",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "I",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "A",
+        "number": 0
+      },
+      {
+        "black": false,
+        "letter": "L",
+        "number": 0,
+        "dotted": {
+          "top": true,
+          "bottom": false,
+          "left": false,
+          "right": false
+        }
+      },
+      {
+        "black": false,
+        "letter": "E",
+        "number": 0
+      }
+    ]
+  ],
+  "clues": {
+    "across": [
+      {
+        "label": "I",
+        "clue": "Homme licencieux",
+        "row": 0,
+        "col": 0,
+        "answer": "MIYAMOTO",
+        "length": 8
+      },
+      {
+        "label": "II",
+        "clue": "Criant tel un Chomp",
+        "row": 1,
+        "col": 0,
+        "answer": "ABOYANT",
+        "length": 7
+      },
+      {
+        "label": "III",
+        "clue": "Couscous au wasabi",
+        "row": 2,
+        "col": 0,
+        "answer": "KUSAAN",
+        "length": 6
+      },
+      {
+        "label": "IV",
+        "clue": "Ohnismes décousus",
+        "row": 3,
+        "col": 0,
+        "answer": "OSHNMISE",
+        "length": 8
+      },
+      {
+        "label": "V",
+        "clue": "Twitter luso-japonais (déso)",
+        "row": 4,
+        "col": 0,
+        "answer": "TUITAO",
+        "length": 6
+      },
+      {
+        "label": "VI.a",
+        "clue": "Toit du Tx",
+        "row": 5,
+        "col": 0,
+        "answer": "OK",
+        "length": 2
+      },
+      {
+        "label": "VI.b",
+        "clue": "Forger la télépathe",
+        "row": 5,
+        "col": 4,
+        "answer": "ANYA",
+        "length": 4
+      },
+      {
+        "label": "VII.a",
+        "clue": "Au commencement d'IMDB",
+        "row": 6,
+        "col": 1,
+        "answer": "IMD",
+        "length": 3
+      },
+      {
+        "label": "VII.b",
+        "clue": "Symbolise l'étain",
+        "row": 6,
+        "col": 6,
+        "answer": "SN",
+        "length": 2
+      },
+      {
+        "label": "VIII",
+        "clue": "Liée à une ligne. Au football, au centre",
+        "row": 7,
+        "col": 2,
+        "answer": "AXIALE",
+        "length": 6
+      }
+    ],
+    "down": [
+      {
+        "label": "1",
+        "clue": "Il signa ton nom",
+        "row": 0,
+        "col": 0,
+        "answer": "MAKOTO",
+        "length": 6
+      },
+      {
+        "label": "2",
+        "clue": "On y prend des bains de sable chaud, au sud de Kagoshima",
+        "row": 0,
+        "col": 1,
+        "answer": "IBUSUKI",
+        "length": 7
+      },
+      {
+        "label": "5",
+        "clue": "Interjection nippone",
+        "row": 0,
+        "col": 4,
+        "answer": "MAAMAA",
+        "length": 6
+      },
+      {
+        "label": "6",
+        "clue": "Larmoyant, toujours en tor",
+        "row": 0,
+        "col": 5,
+        "answer": "ONNION",
+        "length": 6
+      },
+      {
+        "label": "8",
+        "clue": "Celle de Bowser met ton kart à l'amende",
+        "row": 2,
+        "col": 7,
+        "answer": "BECANE",
+        "length": 6
+      },
+      {
+        "label": "3.a",
+        "clue": "Reptile gourmand",
+        "row": 0,
+        "col": 2,
+        "answer": "YOSHI",
+        "length": 5
+      },
+      {
+        "label": "3.b",
+        "clue": "Possessif",
+        "row": 6,
+        "col": 2,
+        "answer": "MA",
+        "length": 2
+      },
+      {
+        "label": "4.a",
+        "clue": "Possédant",
+        "row": 0,
+        "col": 3,
+        "answer": "AYANT",
+        "length": 5
+      },
+      {
+        "label": "4.b",
+        "clue": "Deluxe royal",
+        "row": 6,
+        "col": 3,
+        "answer": "DX",
+        "length": 2
+      },
+      {
+        "label": "7.a",
+        "clue": "On y prend son temps",
+        "row": 0,
+        "col": 6,
+        "answer": "TT",
+        "length": 2
+      },
+      {
+        "label": "7.b",
+        "clue": "Grand nom de la haute couture ",
+        "row": 5,
+        "col": 6,
+        "answer": "YSL",
+        "length": 3
+      }
+    ]
+  },
+  "onlineName": "MK3"
+}
