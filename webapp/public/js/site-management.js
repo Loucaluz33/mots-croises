@@ -1,18 +1,18 @@
 /**
  * Module Gestion Site — gere les grilles online/offline du site joueur.
- * Drag & drop pour reordonner les grilles online.
+ * Drag & drop pour reordonner les grilles online (multi-selection avec Cmd).
  * Clic + bouton swap pour deplacer entre online/offline.
- * Double-clic sur NomOnline pour le modifier.
+ * Double-clic sur une ligne pour modifier le NomOnline.
  */
 const SiteManagement = (() => {
   let onlineList = [];
   let offlineList = [];
   let originalOnline = [];
-  let selectedFile = null;
+  let selectedFiles = new Set(); // multi-selection
   let selectedSide = null;
 
   // Drag state
-  let dragFile = null;
+  let dragFiles = [];
   let dragOverIdx = -1;
 
   function init() {
@@ -30,7 +30,7 @@ const SiteManagement = (() => {
       onlineList = data.online || [];
       offlineList = data.offline || [];
       originalOnline = onlineList.map(g => g.file);
-      selectedFile = null;
+      selectedFiles.clear();
       selectedSide = null;
       renderLists();
       updateApplyButton();
@@ -62,7 +62,7 @@ const SiteManagement = (() => {
       const g = grilles[i];
       const item = document.createElement('div');
       item.className = 'site-row site-item';
-      if (g.file === selectedFile && side === selectedSide) {
+      if (selectedFiles.has(g.file) && side === selectedSide) {
         item.classList.add('selected');
       }
       item.dataset.file = g.file;
@@ -76,13 +76,8 @@ const SiteManagement = (() => {
       colName.textContent = g.title;
 
       const colOnline = document.createElement('span');
-      colOnline.className = 'site-col site-col-online site-col-editable';
+      colOnline.className = 'site-col site-col-online';
       colOnline.textContent = g.onlineName || g.title;
-      colOnline.title = 'Double-cliquer pour modifier';
-      colOnline.addEventListener('dblclick', (e) => {
-        e.stopPropagation();
-        openOnlineNameModal(g);
-      });
 
       const colDim = document.createElement('span');
       colDim.className = 'site-col site-col-dim';
@@ -97,16 +92,38 @@ const SiteManagement = (() => {
       item.appendChild(colDim);
       item.appendChild(colAuthor);
 
-      // Clic = selection
-      item.addEventListener('click', () => {
-        if (selectedFile === g.file && selectedSide === side) {
-          selectedFile = null;
-          selectedSide = null;
+      // Clic = selection (Cmd pour multi-select)
+      item.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey) {
+          // Multi-select: toggle dans la meme liste
+          if (selectedSide !== side) {
+            selectedFiles.clear();
+            selectedSide = side;
+          }
+          if (selectedFiles.has(g.file)) {
+            selectedFiles.delete(g.file);
+            if (selectedFiles.size === 0) selectedSide = null;
+          } else {
+            selectedFiles.add(g.file);
+          }
         } else {
-          selectedFile = g.file;
-          selectedSide = side;
+          // Simple clic
+          if (selectedFiles.size === 1 && selectedFiles.has(g.file) && selectedSide === side) {
+            selectedFiles.clear();
+            selectedSide = null;
+          } else {
+            selectedFiles.clear();
+            selectedFiles.add(g.file);
+            selectedSide = side;
+          }
         }
         renderLists();
+      });
+
+      // Double-clic = editer NomOnline
+      item.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        openOnlineNameModal(g);
       });
 
       // Drag & drop uniquement pour la liste online
@@ -114,13 +131,23 @@ const SiteManagement = (() => {
         item.draggable = true;
 
         item.addEventListener('dragstart', (e) => {
-          dragFile = g.file;
+          // Si l'item dragged fait partie de la selection, on drag toute la selection
+          if (selectedFiles.has(g.file) && selectedSide === 'online') {
+            dragFiles = onlineList.filter(x => selectedFiles.has(x.file)).map(x => x.file);
+          } else {
+            // Sinon, on drag seulement cet item
+            dragFiles = [g.file];
+            selectedFiles.clear();
+            selectedFiles.add(g.file);
+            selectedSide = 'online';
+            renderLists();
+          }
           item.classList.add('dragging');
           e.dataTransfer.effectAllowed = 'move';
         });
 
         item.addEventListener('dragend', () => {
-          dragFile = null;
+          dragFiles = [];
           dragOverIdx = -1;
           item.classList.remove('dragging');
           renderLists();
@@ -145,21 +172,38 @@ const SiteManagement = (() => {
 
         item.addEventListener('drop', (e) => {
           e.preventDefault();
-          if (!dragFile || dragFile === g.file) return;
-
-          const fromIdx = onlineList.findIndex(x => x.file === dragFile);
-          if (fromIdx === -1) return;
+          if (!dragFiles.length) return;
+          // Ne pas dropper sur soi-meme si un seul item
+          if (dragFiles.length === 1 && dragFiles[0] === g.file) return;
 
           const rect = item.getBoundingClientRect();
           const midY = rect.top + rect.height / 2;
           const insertBefore = e.clientY < midY;
 
-          const [moved] = onlineList.splice(fromIdx, 1);
-          let toIdx = onlineList.findIndex(x => x.file === g.file);
-          if (!insertBefore) toIdx++;
-          onlineList.splice(toIdx, 0, moved);
+          // Extraire les items dragged (dans l'ordre actuel)
+          const movedItems = [];
+          const remaining = [];
+          for (const item of onlineList) {
+            if (dragFiles.includes(item.file)) {
+              movedItems.push(item);
+            } else {
+              remaining.push(item);
+            }
+          }
 
-          dragFile = null;
+          // Trouver l'index d'insertion dans la liste restante
+          let toIdx = remaining.findIndex(x => x.file === g.file);
+          if (toIdx === -1) {
+            // La cible fait partie des items deplaces, ignorer
+            return;
+          }
+          if (!insertBefore) toIdx++;
+
+          // Inserer les items deplaces
+          remaining.splice(toIdx, 0, ...movedItems);
+          onlineList = remaining;
+
+          dragFiles = [];
           dragOverIdx = -1;
           renderLists();
           updateApplyButton();
@@ -172,7 +216,6 @@ const SiteManagement = (() => {
 
   // ===== Modal pour modifier le NomOnline =====
   function openOnlineNameModal(grille) {
-    // Supprimer une modale existante
     const existing = document.getElementById('online-name-modal');
     if (existing) existing.remove();
 
@@ -215,7 +258,6 @@ const SiteManagement = (() => {
     btnApply.disabled = true;
     btnApply.textContent = 'Appliquer';
 
-    // Activer le bouton seulement si la valeur a change
     const originalValue = input.value;
     input.addEventListener('input', () => {
       const changed = input.value.trim() !== '' && input.value.trim() !== originalValue;
@@ -270,7 +312,6 @@ const SiteManagement = (() => {
     input.focus();
     input.select();
 
-    // Entree pour valider
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !btnApply.disabled) btnApply.click();
       if (e.key === 'Escape') overlay.remove();
@@ -278,22 +319,20 @@ const SiteManagement = (() => {
   }
 
   function swapSelected() {
-    if (!selectedFile || !selectedSide) return;
+    if (!selectedFiles.size || !selectedSide) return;
 
     if (selectedSide === 'online') {
-      const idx = onlineList.findIndex(g => g.file === selectedFile);
-      if (idx !== -1) {
-        offlineList.push(onlineList.splice(idx, 1)[0]);
-        offlineList.sort((a, b) => a.file.localeCompare(b.file));
-      }
+      const toMove = onlineList.filter(g => selectedFiles.has(g.file));
+      onlineList = onlineList.filter(g => !selectedFiles.has(g.file));
+      offlineList.push(...toMove);
+      offlineList.sort((a, b) => a.file.localeCompare(b.file));
     } else {
-      const idx = offlineList.findIndex(g => g.file === selectedFile);
-      if (idx !== -1) {
-        onlineList.push(offlineList.splice(idx, 1)[0]);
-      }
+      const toMove = offlineList.filter(g => selectedFiles.has(g.file));
+      offlineList = offlineList.filter(g => !selectedFiles.has(g.file));
+      onlineList.push(...toMove);
     }
 
-    selectedFile = null;
+    selectedFiles.clear();
     selectedSide = null;
     renderLists();
     updateApplyButton();

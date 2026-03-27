@@ -29,15 +29,39 @@ function readGrilleMeta(f) {
   }
 }
 
+/** Copie un fichier JSON de site/ vers la racine du repo */
+function syncToRoot(filename) {
+  const src = path.join(SITE_DIR, filename);
+  const dst = path.join(REPO_DIR, filename);
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, dst);
+  }
+}
+
+/** Git add + commit + push */
+function gitPush(files, message) {
+  try {
+    const fileArgs = files.map(f => `"${f}"`).join(' ');
+    execSync(`git add ${fileArgs}`, { cwd: REPO_DIR, stdio: 'pipe' });
+    const status = execSync('git status --porcelain', { cwd: REPO_DIR, encoding: 'utf-8' });
+    if (status.trim()) {
+      execSync(`git commit -m "${message}"`, { cwd: REPO_DIR, stdio: 'pipe' });
+      execSync('git push', { cwd: REPO_DIR, stdio: 'pipe', timeout: 30000 });
+      return 'Changements push sur GitHub';
+    }
+    return 'Aucun changement a commiter';
+  } catch (gitErr) {
+    return 'Fichiers mis a jour localement, erreur git: ' + gitErr.message;
+  }
+}
+
 /**
  * GET /api/site/grilles
- * Retourne { online: [...], offline: [...] }
  */
 router.get('/grilles', (req, res) => {
   try {
     const allFiles = fs.readdirSync(SITE_DIR).filter(f => f.endsWith('.json'));
 
-    // Lire index.html pour trouver les grilles online (dans l'ordre)
     const html = fs.readFileSync(INDEX_HTML, 'utf-8');
     const match = html.match(/const grids = \[([\s\S]*?)\];/);
     const onlineFiles = [];
@@ -51,7 +75,6 @@ router.get('/grilles', (req, res) => {
 
     const grilles = allFiles.map(f => readGrilleMeta(f));
 
-    // Garder l'ordre d'index.html pour les online
     const online = onlineFiles
       .map(f => grilles.find(g => g.file === f))
       .filter(Boolean);
@@ -74,39 +97,26 @@ router.post('/apply', (req, res) => {
       return res.status(400).json({ error: 'online doit etre un tableau' });
     }
 
-    // Lire index.html
+    // Lire et mettre a jour index.html
     let html = fs.readFileSync(INDEX_HTML, 'utf-8');
-
-    // Reconstruire le bloc const grids = [...]
     const entries = online.map(f => `  { file: '${f}' }`).join(',\n');
     const newBlock = `const grids = [\n${entries}\n];`;
     html = html.replace(/const grids = \[[\s\S]*?\];/, newBlock);
-
     fs.writeFileSync(INDEX_HTML, html, 'utf-8');
 
-    // Copier joueur.html depuis site/ vers la racine
+    // Copier joueur.html et les JSON online vers la racine
     const joueurSrc = path.join(SITE_DIR, 'joueur.html');
     const joueurDst = path.join(REPO_DIR, 'joueur.html');
     if (fs.existsSync(joueurSrc)) {
       fs.copyFileSync(joueurSrc, joueurDst);
     }
-
-    // Git add, commit, push
-    let gitResult = '';
-    try {
-      execSync('git add index.html joueur.html site/', { cwd: REPO_DIR, stdio: 'pipe' });
-      const status = execSync('git status --porcelain', { cwd: REPO_DIR, encoding: 'utf-8' });
-      if (status.trim()) {
-        const msg = `Mise a jour grilles site: ${online.join(', ')}`;
-        execSync(`git commit -m "${msg}"`, { cwd: REPO_DIR, stdio: 'pipe' });
-        execSync('git push', { cwd: REPO_DIR, stdio: 'pipe', timeout: 30000 });
-        gitResult = 'Changements push sur GitHub';
-      } else {
-        gitResult = 'Aucun changement a commiter';
-      }
-    } catch (gitErr) {
-      gitResult = 'Fichiers mis a jour localement, mais erreur git: ' + gitErr.message;
+    // Sync tous les JSON online vers la racine
+    for (const f of online) {
+      syncToRoot(f);
     }
+
+    const gitFiles = ['index.html', 'joueur.html', 'site/'].concat(online);
+    const gitResult = gitPush(gitFiles, `Mise a jour grilles site: ${online.join(', ')}`);
 
     res.json({ success: true, message: gitResult });
   } catch (err) {
@@ -130,27 +140,18 @@ router.put('/online-name', (req, res) => {
       return res.status(404).json({ error: 'Fichier non trouve' });
     }
 
-    // Mettre a jour le JSON
+    // Mettre a jour le JSON dans site/
     const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     data.onlineName = onlineName.trim();
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 
-    // Git add, commit, push
-    let gitResult = '';
-    try {
-      execSync(`git add "site/${file}"`, { cwd: REPO_DIR, stdio: 'pipe' });
-      const status = execSync(`git status --porcelain "site/${file}"`, { cwd: REPO_DIR, encoding: 'utf-8' });
-      if (status.trim()) {
-        const msg = `Renommage online: ${file} -> ${onlineName.trim()}`;
-        execSync(`git commit -m "${msg}"`, { cwd: REPO_DIR, stdio: 'pipe' });
-        execSync('git push', { cwd: REPO_DIR, stdio: 'pipe', timeout: 30000 });
-        gitResult = 'Changements push sur GitHub';
-      } else {
-        gitResult = 'Aucun changement';
-      }
-    } catch (gitErr) {
-      gitResult = 'Fichier mis a jour localement, erreur git: ' + gitErr.message;
-    }
+    // Copier aussi vers la racine (GitHub Pages sert depuis la racine)
+    syncToRoot(file);
+
+    const gitResult = gitPush(
+      [`site/${file}`, file],
+      `Renommage online: ${file} -> ${onlineName.trim()}`
+    );
 
     res.json({ success: true, onlineName: data.onlineName, message: gitResult });
   } catch (err) {

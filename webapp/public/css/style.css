@@ -551,17 +551,6 @@ tr.selected { background: #e8eeff !important; }
 .site-col-dim { flex: 1; min-width: 0; text-align: center; }
 .site-col-author { flex: 2; min-width: 0; }
 
-.site-col-editable {
-  cursor: pointer;
-  color: #4a6cf7;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 2px;
-}
-.site-item.selected .site-col-editable {
-  color: white;
-}
-
 .site-item {
   padding: 7px 10px;
   border-radius: 4px;
