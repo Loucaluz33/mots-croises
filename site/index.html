@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mots Croisés</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: url('background.png') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .card {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 48px;
+    max-width: 550px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  h1 {
+    font-size: 2.2em;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: #888;
+    font-size: 1em;
+    margin-bottom: 32px;
+  }
+  .grid-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .grid-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: white;
+    border: 2px solid #e8e8e8;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: #1a1a2e;
+    font-family: inherit;
+  }
+  .grid-btn:hover {
+    border-color: #4a6cf7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(74,108,247,0.2);
+  }
+  .grid-btn .grid-title {
+    font-size: 1.1em;
+    font-weight: 700;
+  }
+  .grid-btn .grid-meta {
+    font-size: 0.82em;
+    color: #888;
+    text-align: left;
+    margin-top: 2px;
+  }
+  .grid-btn .grid-info { text-align: left; }
+  .grid-btn .arrow {
+    font-size: 1.4em;
+    color: #4a6cf7;
+    font-weight: 700;
+  }
+  .footer {
+    margin-top: 24px;
+    font-size: 0.82em;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Mots Croisés</h1>
+  <p class="subtitle">Choisissez une grille pour commencer</p>
+  <div class="grid-list" id="gridList">
+    <p style="color:#888;">Chargement...</p>
+  </div>
+  <p class="footer">Créé avec Verbicruciste</p>
+</div>
+
+<script>
+// === GRILLES DISPONIBLES ===
+// Pour ajouter une grille, ajoutez une entrée ici avec le nom du fichier JSON
+const grids = [
+  { file: 'MK.json' },
+  { file: 'MK2.json' },
+  { file: 'MK3.json' },
+  { file: 'Laclos1.json' }
+];
+
+const list = document.getElementById('gridList');
+
+// Load each grid's JSON to get title, author, size
+Promise.all(grids.map(g =>
+  fetch(g.file)
+    .then(r => r.json())
+    .then(data => ({ file: g.file, title: (data.title && data.title !== 'Sans titre') ? data.title : g.file.replace('.json',''), author: data.author || '', size: data.size }))
+    .catch(() => ({ file: g.file, title: g.file, author: '', size: null }))
+)).then(results => {
+  list.innerHTML = '';
+  for (const g of results) {
+    const a = document.createElement('a');
+    a.className = 'grid-btn';
+    a.href = `joueur.html?grille=${encodeURIComponent(g.file)}`;
+    const sizeTxt = g.size ? `${g.size.rows} x ${g.size.cols}` : '';
+    const metaParts = [g.author, sizeTxt].filter(Boolean).join(' — ');
+    a.innerHTML = `
+      <div class="grid-info">
+        <div class="grid-title">${g.title}</div>
+        ${metaParts ? `<div class="grid-meta">${metaParts}</div>` : ''}
+      </div>
+      <span class="arrow">&rarr;</span>
+    `;
+    list.appendChild(a);
+  }
+});
+</script>
+</body>
+</html>
