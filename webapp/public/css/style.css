@@ -816,3 +816,141 @@ tr.selected { background: #e8eeff !important; }
   justify-content: flex-end;
   gap: 10px;
 }
+
+/* ========== NUMBERING MODAL ========== */
+.numbering-modal {
+  max-width: 440px;
+  width: 90%;
+  padding: 24px;
+}
+.numbering-modal h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+.numbering-modal .modal-desc {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 20px;
+}
+.numbering-modal .num-style-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.numbering-modal .num-style-card {
+  border: 1.5px solid #e0e4ed;
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #fafbfd;
+}
+.numbering-modal .num-style-card:hover {
+  border-color: #a0b0ff;
+  background: #f5f7ff;
+}
+.numbering-modal .num-style-card.selected {
+  border-color: #4a6cf7;
+  background: #f0f4ff;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+}
+.numbering-modal .num-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.numbering-modal .num-card-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #cdd5e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.numbering-modal .num-style-card.selected .num-card-radio {
+  border-color: #4a6cf7;
+}
+.numbering-modal .num-style-card.selected .num-card-radio::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4a6cf7;
+}
+.numbering-modal .num-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+.numbering-modal .num-card-desc {
+  font-size: 11px;
+  color: #8892a4;
+  margin-top: 2px;
+  margin-left: 28px;
+}
+.numbering-modal .num-european-opts {
+  margin-top: 12px;
+  margin-left: 28px;
+  padding-top: 12px;
+  border-top: 1px solid #e8ecf4;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.numbering-modal .num-opt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.numbering-modal .num-opt-row label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  min-width: 68px;
+}
+.numbering-modal .num-opt-row select {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #cdd5e0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  background: white;
+  color: #1a1a2e;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.numbering-modal .num-opt-row select:focus {
+  border-color: #4a6cf7;
+}
+.numbering-modal .num-suffix-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 28px;
+  margin-top: 4px;
+}
+.numbering-modal .num-suffix-opt input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #4a6cf7;
+  cursor: pointer;
+}
+.numbering-modal .num-suffix-opt label {
+  font-size: 12px;
+  color: #666;
+  cursor: pointer;
+}
+.numbering-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e8ecf4;
+}

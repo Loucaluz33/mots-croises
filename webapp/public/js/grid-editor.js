@@ -870,34 +870,46 @@ const GridEditor = (() => {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
-      <div class="modal" style="max-width:450px">
+      <div class="modal numbering-modal">
         <h3>Style de numérotation</h3>
-        <div class="form-group">
-          <label><input type="radio" name="num-style" value="european" ${numberingStyle === 'european' ? 'checked' : ''}> Européenne</label>
-        </div>
-        <div id="european-options" style="margin-left:24px; display:${numberingStyle === 'european' ? 'block' : 'none'}">
-          <div class="form-group">
-            <label>Lignes :</label>
-            <select id="row-num-type" style="width:auto; margin-left:8px">
-              <option value="roman" ${rowNumbering === 'roman' ? 'selected' : ''}>I, II, III (Romains)</option>
-              <option value="arabic" ${rowNumbering === 'arabic' ? 'selected' : ''}>1, 2, 3 (Arabes)</option>
-              <option value="alpha" ${rowNumbering === 'alpha' ? 'selected' : ''}>A, B, C (Alpha)</option>
-            </select>
+        <p class="modal-desc">Choisissez le format d'affichage des indices de la grille</p>
+        <div class="num-style-cards">
+          <div class="num-style-card${numberingStyle === 'european' ? ' selected' : ''}" data-style="european">
+            <div class="num-card-header">
+              <div class="num-card-radio"></div>
+              <span class="num-card-title">Européenne</span>
+            </div>
+            <div class="num-card-desc">Lignes et colonnes numérotées séparément</div>
+            <div class="num-european-opts" style="display:${numberingStyle === 'european' ? 'flex' : 'none'}">
+              <div class="num-opt-row">
+                <label>Lignes</label>
+                <select id="row-num-type">
+                  <option value="roman" ${rowNumbering === 'roman' ? 'selected' : ''}>I, II, III (Romains)</option>
+                  <option value="arabic" ${rowNumbering === 'arabic' ? 'selected' : ''}>1, 2, 3 (Arabes)</option>
+                  <option value="alpha" ${rowNumbering === 'alpha' ? 'selected' : ''}>A, B, C (Alpha)</option>
+                </select>
+              </div>
+              <div class="num-opt-row">
+                <label>Colonnes</label>
+                <select id="col-num-type">
+                  <option value="roman" ${colNumbering === 'roman' ? 'selected' : ''}>I, II, III (Romains)</option>
+                  <option value="arabic" ${colNumbering === 'arabic' ? 'selected' : ''}>1, 2, 3 (Arabes)</option>
+                  <option value="alpha" ${colNumbering === 'alpha' ? 'selected' : ''}>A, B, C (Alpha)</option>
+                </select>
+              </div>
+              <label class="num-suffix-opt">
+                <input type="checkbox" id="use-suffixes" ${useSuffixes ? 'checked' : ''}>
+                <label for="use-suffixes">Suffixes (.a, .b) pour les mots multiples</label>
+              </label>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Colonnes :</label>
-            <select id="col-num-type" style="width:auto; margin-left:8px">
-              <option value="roman" ${colNumbering === 'roman' ? 'selected' : ''}>I, II, III (Romains)</option>
-              <option value="arabic" ${colNumbering === 'arabic' ? 'selected' : ''}>1, 2, 3 (Arabes)</option>
-              <option value="alpha" ${colNumbering === 'alpha' ? 'selected' : ''}>A, B, C (Alpha)</option>
-            </select>
+          <div class="num-style-card${numberingStyle === 'american' ? ' selected' : ''}" data-style="american">
+            <div class="num-card-header">
+              <div class="num-card-radio"></div>
+              <span class="num-card-title">Américaine</span>
+            </div>
+            <div class="num-card-desc">Numéros séquentiels dans les cases blanches</div>
           </div>
-          <div class="form-group">
-            <label><input type="checkbox" id="use-suffixes" ${useSuffixes ? 'checked' : ''}> Utiliser des suffixes (.a, .b) pour les mots multiples</label>
-          </div>
-        </div>
-        <div class="form-group" style="margin-top:12px">
-          <label><input type="radio" name="num-style" value="american" ${numberingStyle === 'american' ? 'checked' : ''}> Américaine (Numéros dans les cases)</label>
         </div>
         <div class="modal-actions">
           <button class="btn" id="btn-num-cancel">Annuler</button>
@@ -907,14 +919,18 @@ const GridEditor = (() => {
     `;
     document.body.appendChild(overlay);
 
-    const styleRadios = overlay.querySelectorAll('input[name="num-style"]');
-    styleRadios.forEach(r => r.addEventListener('change', () => {
-      overlay.querySelector('#european-options').style.display = (r.value === 'european' ? 'block' : 'none');
+    const cards = overlay.querySelectorAll('.num-style-card');
+    cards.forEach(card => card.addEventListener('click', (e) => {
+      if (e.target.closest('select') || e.target.closest('input[type="checkbox"]') || e.target.closest('.num-suffix-opt label[for]')) return;
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      overlay.querySelector('.num-european-opts').style.display = (card.dataset.style === 'european' ? 'flex' : 'none');
     }));
 
     overlay.querySelector('#btn-num-cancel').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
     overlay.querySelector('#btn-num-ok').addEventListener('click', () => {
-      const selectedStyle = overlay.querySelector('input[name="num-style"]:checked').value;
+      const selectedStyle = overlay.querySelector('.num-style-card.selected').dataset.style;
       const selectedRow = overlay.querySelector('#row-num-type').value;
       const selectedCol = overlay.querySelector('#col-num-type').value;
       const selectedSuffixes = overlay.querySelector('#use-suffixes').checked;
@@ -964,14 +980,14 @@ const GridEditor = (() => {
         return obj;
       })),
       clues: {
-        across: Object.values(clues.across).map(c => ({
-          label: c.label, clue: c.clue || '',
+        across: Object.entries(clues.across).map(([key, c]) => ({
+          label: key, clue: c.clue || '',
           row: c.row, col: c.col,
           answer: getWord(c.row, c.col, 'across').trim(),
           length: getWord(c.row, c.col, 'across').trimEnd().length,
         })),
-        down: Object.values(clues.down).map(c => ({
-          label: c.label, clue: c.clue || '',
+        down: Object.entries(clues.down).map(([key, c]) => ({
+          label: key, clue: c.clue || '',
           row: c.row, col: c.col,
           answer: getWord(c.row, c.col, 'down').trim(),
           length: getWord(c.row, c.col, 'down').trimEnd().length,

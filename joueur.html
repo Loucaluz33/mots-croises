@@ -620,14 +620,25 @@ function loadPuzzle(data) {
 
   acrossClues = {};
   downClues = {};
-  for (const c of (data.clues.across || [])) {
-    const key = c.label;
-    acrossClues[key] = { label: c.label, number: key, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
+  function loadClueList(list, target) {
+    const labelCount = {};
+    for (const c of list) {
+      labelCount[c.label] = (labelCount[c.label] || 0) + 1;
+    }
+    const labelIdx = {};
+    for (const c of list) {
+      let key = c.label;
+      // Backward compat: old grids may have duplicate labels (no-suffix mode)
+      if (labelCount[c.label] > 1 && !key.includes('.')) {
+        const idx = labelIdx[c.label] || 0;
+        key = `${c.label}.${idx}`;
+        labelIdx[c.label] = idx + 1;
+      }
+      target[key] = { label: key, displayLabel: c.label, number: key, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
+    }
   }
-  for (const c of (data.clues.down || [])) {
-    const key = c.label;
-    downClues[key] = { label: c.label, number: key, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
-  }
+  loadClueList(data.clues.across || [], acrossClues);
+  loadClueList(data.clues.down || [], downClues);
 
   document.getElementById('welcomeScreen').style.display = 'none';
   document.getElementById('app').classList.add('active');
@@ -749,7 +760,7 @@ function renderGrid() {
     thead.appendChild(corner);
     for (let c = 0; c < cols; c++) {
       const th = document.createElement('th');
-      th.textContent = c + 1;
+      th.textContent = getLabel(c + 1, colNumbering);
       thead.appendChild(th);
     }
     table.appendChild(thead);
@@ -760,7 +771,7 @@ function renderGrid() {
     // European style: add row header
     if (frenchStyle) {
       const th = document.createElement('th');
-      th.textContent = toRoman(r + 1);
+      th.textContent = getLabel(r + 1, rowNumbering);
       tr.appendChild(th);
     }
     for (let c = 0; c < cols; c++) {
@@ -933,9 +944,8 @@ function getClueNumber(r, c, dir) {
   }
   if (frenchStyle) {
     const labelBase = getLabel(dir === 'across' ? r + 1 : c + 1, dir === 'across' ? rowNumbering : colNumbering);
-    if (!useSuffixes) return labelBase;
 
-    // Find which word it is in the line to append suffix
+    // Find which word it is in the line
     const cells = getWordCells(r, c, dir);
     const [sr, sc] = cells[0];
     const allWords = [];
@@ -948,8 +958,6 @@ function getClueNumber(r, c, dir) {
           if (curC - startC >= 2) allWords.push(startC);
         } else curC++;
       }
-      const idx = allWords.indexOf(sc);
-      return allWords.length > 1 ? `${labelBase}.${String.fromCharCode(97 + idx)}` : labelBase;
     } else {
       let curR = 0;
       while (curR < rows) {
@@ -959,18 +967,17 @@ function getClueNumber(r, c, dir) {
           if (curR - startR >= 2) allWords.push(startR);
         } else curR++;
       }
-      const idx = allWords.indexOf(sr);
-      return allWords.length > 1 ? `${labelBase}.${String.fromCharCode(97 + idx)}` : labelBase;
     }
+
+    const startPos = dir === 'across' ? sc : sr;
+    const idx = allWords.indexOf(startPos);
+
+    if (allWords.length <= 1) return labelBase;
+    if (useSuffixes) return `${labelBase}.${String.fromCharCode(97 + idx)}`;
+    return `${labelBase}.${idx}`;
   }
   const [sr, sc] = getWordStart(r, c, dir);
   return String(playerGrid[sr][sc].number);
-}
-
-function formatClueNumber(num, dir) {
-  if (numberingStyle === 'american') return String(num);
-  if (frenchStyle && dir === 'across') return toRoman(num);
-  return String(num);
 }
 
 function updateCurrentClue() {
@@ -980,8 +987,9 @@ function updateCurrentClue() {
   const dirLabel = currentDirection === 'across' ? 'H' : 'V';
   const clueMap = currentDirection === 'across' ? acrossClues : downClues;
   const clue = clueMap[key];
+  const dispLabel = getDisplayLabel(key);
 
-  document.getElementById('currentClueDir').textContent = `${key} ${dirLabel}.`;
+  document.getElementById('currentClueDir').textContent = `${dispLabel} ${dirLabel}.`;
   document.getElementById('currentClueText').textContent = clue ? clue.clue : '';
 }
 
@@ -991,16 +999,30 @@ function renderClues() {
   renderClueDir('down', 'downClues', downClues);
 }
 
+function getDisplayLabel(key) {
+  // For no-suffix mode: "I.0" → "I", "I.1" → "I"
+  // For suffix mode: "I.a" → "I.a" (keep as-is)
+  // For single word or american: "I" → "I", "1" → "1"
+  if (!useSuffixes && frenchStyle) {
+    const dot = key.lastIndexOf('.');
+    if (dot >= 0 && /^\d+$/.test(key.substring(dot + 1))) {
+      return key.substring(0, dot);
+    }
+  }
+  return key;
+}
+
 function renderClueDir(dir, containerId, clueMap) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
 
-  // Regrouper par label
+  // Regrouper par label d'affichage
   const grouped = {};
   for (const key of Object.keys(clueMap)) {
     const entry = clueMap[key];
-    if (!grouped[entry.label]) grouped[entry.label] = [];
-    grouped[entry.label].push({ key, ...entry });
+    const dispLabel = getDisplayLabel(key);
+    if (!grouped[dispLabel]) grouped[dispLabel] = [];
+    grouped[dispLabel].push({ key, ...entry });
   }
 
   // Trier les labels naturellement
