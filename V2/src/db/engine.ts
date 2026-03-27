@@ -2,13 +2,17 @@
  * sql.js engine — singleton for browser-side SQLite.
  * Loads a .db file into memory via sql.js (WASM).
  */
-import initSqlJs, { type Database as SqlJsDatabase } from 'sql.js'
+import type { Database as SqlJsDatabase } from 'sql.js'
 
 let db: SqlJsDatabase | null = null
-let SQL: Awaited<ReturnType<typeof initSqlJs>> | null = null
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let SQL: any = null
 
 async function ensureSqlJs() {
   if (!SQL) {
+    const mod = await import('sql.js')
+    // Vite may wrap the UMD — handle both shapes
+    const initSqlJs = typeof mod.default === 'function' ? mod.default : mod
     SQL = await initSqlJs({ locateFile: () => '/sql-wasm.wasm' })
   }
   return SQL
