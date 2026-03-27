@@ -258,8 +258,9 @@ const GridEditor = (() => {
     // Dotted first selection indicator
     if (dottedFirst) {
       const [dr, dc] = dottedFirst;
-      const x = HEADER_SIZE + dc * CELL_SIZE;
-      const y = HEADER_SIZE + dr * CELL_SIZE;
+      const dOffset = (numberingStyle === 'european' ? HEADER_SIZE : 0);
+      const x = dOffset + dc * CELL_SIZE;
+      const y = dOffset + dr * CELL_SIZE;
       ctx.strokeStyle = '#f39c12';
       ctx.lineWidth = 2;
       ctx.strokeRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
