@@ -1,8 +1,7 @@
 /**
  * Routes pour la gestion du site joueur.html
- * - Liste les grilles online/offline
- * - Applique les changements (met a jour index.html + git push)
- * - Met a jour le onlineName d'une grille
+ * Tous les fichiers (JSON, joueur.html, index.html) sont a la racine du repo.
+ * GitHub Pages sert directement depuis la racine.
  */
 const express = require('express');
 const router = express.Router();
@@ -10,13 +9,12 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const SITE_DIR = path.resolve(__dirname, '..', '..', 'site');
-const INDEX_HTML = path.resolve(__dirname, '..', '..', 'index.html');
 const REPO_DIR = path.resolve(__dirname, '..', '..');
+const INDEX_HTML = path.join(REPO_DIR, 'index.html');
 
 function readGrilleMeta(f) {
   try {
-    const data = JSON.parse(fs.readFileSync(path.join(SITE_DIR, f), 'utf-8'));
+    const data = JSON.parse(fs.readFileSync(path.join(REPO_DIR, f), 'utf-8'));
     return {
       file: f,
       title: (data.title && data.title !== 'Sans titre') ? data.title : f.replace('.json', ''),
@@ -26,15 +24,6 @@ function readGrilleMeta(f) {
     };
   } catch {
     return { file: f, title: f.replace('.json', ''), onlineName: f.replace('.json', ''), author: '', size: null };
-  }
-}
-
-/** Copie un fichier JSON de site/ vers la racine du repo */
-function syncToRoot(filename) {
-  const src = path.join(SITE_DIR, filename);
-  const dst = path.join(REPO_DIR, filename);
-  if (fs.existsSync(src)) {
-    fs.copyFileSync(src, dst);
   }
 }
 
@@ -60,8 +49,11 @@ function gitPush(files, message) {
  */
 router.get('/grilles', (req, res) => {
   try {
-    const allFiles = fs.readdirSync(SITE_DIR).filter(f => f.endsWith('.json'));
+    // Lister les JSON de grilles a la racine du repo
+    const allFiles = fs.readdirSync(REPO_DIR)
+      .filter(f => f.endsWith('.json') && !f.startsWith('.') && f !== 'package.json' && f !== 'package-lock.json');
 
+    // Lire index.html pour trouver les grilles online (dans l'ordre)
     const html = fs.readFileSync(INDEX_HTML, 'utf-8');
     const match = html.match(/const grids = \[([\s\S]*?)\];/);
     const onlineFiles = [];
@@ -97,25 +89,14 @@ router.post('/apply', (req, res) => {
       return res.status(400).json({ error: 'online doit etre un tableau' });
     }
 
-    // Lire et mettre a jour index.html
+    // Mettre a jour index.html
     let html = fs.readFileSync(INDEX_HTML, 'utf-8');
     const entries = online.map(f => `  { file: '${f}' }`).join(',\n');
     const newBlock = `const grids = [\n${entries}\n];`;
     html = html.replace(/const grids = \[[\s\S]*?\];/, newBlock);
     fs.writeFileSync(INDEX_HTML, html, 'utf-8');
 
-    // Copier joueur.html et les JSON online vers la racine
-    const joueurSrc = path.join(SITE_DIR, 'joueur.html');
-    const joueurDst = path.join(REPO_DIR, 'joueur.html');
-    if (fs.existsSync(joueurSrc)) {
-      fs.copyFileSync(joueurSrc, joueurDst);
-    }
-    // Sync tous les JSON online vers la racine
-    for (const f of online) {
-      syncToRoot(f);
-    }
-
-    const gitFiles = ['index.html', 'joueur.html', 'site/'].concat(online);
+    const gitFiles = ['index.html'].concat(online);
     const gitResult = gitPush(gitFiles, `Mise a jour grilles site: ${online.join(', ')}`);
 
     res.json({ success: true, message: gitResult });
@@ -135,23 +116,16 @@ router.put('/online-name', (req, res) => {
       return res.status(400).json({ error: 'file et onlineName requis' });
     }
 
-    const filePath = path.join(SITE_DIR, file);
+    const filePath = path.join(REPO_DIR, file);
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'Fichier non trouve' });
     }
 
-    // Mettre a jour le JSON dans site/
     const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     data.onlineName = onlineName.trim();
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 
-    // Copier aussi vers la racine (GitHub Pages sert depuis la racine)
-    syncToRoot(file);
-
-    const gitResult = gitPush(
-      [`site/${file}`, file],
-      `Renommage online: ${file} -> ${onlineName.trim()}`
-    );
+    const gitResult = gitPush([file], `Renommage online: ${file} -> ${onlineName.trim()}`);
 
     res.json({ success: true, onlineName: data.onlineName, message: gitResult });
   } catch (err) {
