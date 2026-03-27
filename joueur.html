@@ -535,6 +535,17 @@ function toRoman(n) {
   return result;
 }
 
+function fromRoman(s) {
+  const map = {M:1000,D:500,C:100,L:50,X:10,V:5,I:1};
+  let total = 0;
+  for (let i = 0; i < s.length; i++) {
+    const cur = map[s[i]] || 0;
+    const next = map[s[i+1]] || 0;
+    total += cur < next ? -cur : cur;
+  }
+  return total;
+}
+
 // ========== FILE ==========
 function openFile() {
   document.getElementById('fileInput').click();
@@ -599,10 +610,12 @@ function loadPuzzle(data) {
   acrossClues = {};
   downClues = {};
   for (const c of (data.clues.across || [])) {
-    acrossClues[c.number] = { number: c.number, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
+    const num = c.number != null ? c.number : (frenchStyle ? fromRoman(c.label) : parseInt(c.label));
+    acrossClues[num] = { number: num, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
   }
   for (const c of (data.clues.down || [])) {
-    downClues[c.number] = { number: c.number, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
+    const num = c.number != null ? c.number : parseInt(c.label);
+    downClues[num] = { number: num, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
   }
 
   document.getElementById('welcomeScreen').style.display = 'none';
