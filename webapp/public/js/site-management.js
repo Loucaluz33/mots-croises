@@ -11,9 +11,64 @@ const SiteManagement = (() => {
   let selectedFiles = new Set(); // multi-selection
   let selectedSide = null;
 
+  // Undo history (snapshots of onlineList/offlineList)
+  let undoStack = [];
+
+  function saveSnapshot() {
+    undoStack.push({
+      online: onlineList.map(g => ({ ...g })),
+      offline: offlineList.map(g => ({ ...g })),
+    });
+  }
+
+  function undo() {
+    if (!undoStack.length) return;
+    const snapshot = undoStack.pop();
+    onlineList = snapshot.online;
+    offlineList = snapshot.offline;
+    selectedFiles.clear();
+    selectedSide = null;
+    renderLists();
+    updateApplyButton();
+  }
+
   // Drag state
   let dragFiles = [];
   let dragOverIdx = -1;
+  let autoScrollRAF = null;
+  let autoScrollContainer = null;
+  let lastDragY = 0;
+
+  // Auto-scroll pendant le drag quand le curseur est pres des bords
+  function startAutoScroll(container) {
+    autoScrollContainer = container;
+    document.addEventListener('dragover', trackDragY);
+    autoScrollLoop();
+  }
+
+  function stopAutoScroll() {
+    document.removeEventListener('dragover', trackDragY);
+    if (autoScrollRAF) cancelAnimationFrame(autoScrollRAF);
+    autoScrollRAF = null;
+    autoScrollContainer = null;
+  }
+
+  function trackDragY(e) {
+    lastDragY = e.clientY;
+  }
+
+  function autoScrollLoop() {
+    if (!autoScrollContainer) return;
+    const rect = autoScrollContainer.getBoundingClientRect();
+    const edgeZone = 40; // px depuis le bord pour declencher le scroll
+    const speed = 6;
+    if (lastDragY < rect.top + edgeZone && lastDragY > rect.top - 20) {
+      autoScrollContainer.scrollTop -= speed;
+    } else if (lastDragY > rect.bottom - edgeZone && lastDragY < rect.bottom + 20) {
+      autoScrollContainer.scrollTop += speed;
+    }
+    autoScrollRAF = requestAnimationFrame(autoScrollLoop);
+  }
 
   function init() {
     document.getElementById('btn-site-swap').addEventListener('click', swapSelected);
@@ -30,6 +85,7 @@ const SiteManagement = (() => {
       onlineList = data.online || [];
       offlineList = data.offline || [];
       originalOnline = onlineList.map(g => g.file);
+      undoStack = [];
       selectedFiles.clear();
       selectedSide = null;
       renderLists();
@@ -135,27 +191,43 @@ const SiteManagement = (() => {
           if (selectedFiles.has(g.file) && selectedSide === 'online') {
             dragFiles = onlineList.filter(x => selectedFiles.has(x.file)).map(x => x.file);
           } else {
-            // Sinon, on drag seulement cet item
+            // Selectionner cet item sans re-render (sinon le DOM est reconstruit et le drag casse)
             dragFiles = [g.file];
             selectedFiles.clear();
             selectedFiles.add(g.file);
             selectedSide = 'online';
-            renderLists();
+            // Mise a jour visuelle sans reconstruire le DOM
+            container.querySelectorAll('.site-item').forEach(el => {
+              el.classList.toggle('selected', el.dataset.file === g.file);
+            });
           }
-          item.classList.add('dragging');
+          // Image de drag invisible (les lignes ne bougent pas visuellement)
+          const ghost = document.createElement('div');
+          ghost.style.width = '1px';
+          ghost.style.height = '1px';
+          ghost.style.opacity = '0.01';
+          ghost.style.position = 'absolute';
+          ghost.style.top = '-9999px';
+          document.body.appendChild(ghost);
+          e.dataTransfer.setDragImage(ghost, 0, 0);
+          setTimeout(() => ghost.remove(), 0);
           e.dataTransfer.effectAllowed = 'move';
+          // Demarrer l'auto-scroll
+          startAutoScroll(container);
         });
 
         item.addEventListener('dragend', () => {
+          stopAutoScroll();
           dragFiles = [];
           dragOverIdx = -1;
-          item.classList.remove('dragging');
           renderLists();
         });
 
         item.addEventListener('dragover', (e) => {
           e.preventDefault();
           e.dataTransfer.dropEffect = 'move';
+          // Ne pas afficher l'indicateur sur les items qu'on drag
+          if (dragFiles.includes(g.file)) return;
           container.querySelectorAll('.site-item').forEach(el => el.classList.remove('drop-above', 'drop-below'));
           const rect = item.getBoundingClientRect();
           const midY = rect.top + rect.height / 2;
@@ -172,34 +244,31 @@ const SiteManagement = (() => {
 
         item.addEventListener('drop', (e) => {
           e.preventDefault();
+          stopAutoScroll();
           if (!dragFiles.length) return;
-          // Ne pas dropper sur soi-meme si un seul item
           if (dragFiles.length === 1 && dragFiles[0] === g.file) return;
+          // Ne pas dropper sur un item qu'on drag
+          if (dragFiles.includes(g.file)) return;
 
+          saveSnapshot();
           const rect = item.getBoundingClientRect();
           const midY = rect.top + rect.height / 2;
           const insertBefore = e.clientY < midY;
 
-          // Extraire les items dragged (dans l'ordre actuel)
           const movedItems = [];
           const remaining = [];
-          for (const item of onlineList) {
-            if (dragFiles.includes(item.file)) {
-              movedItems.push(item);
+          for (const ol of onlineList) {
+            if (dragFiles.includes(ol.file)) {
+              movedItems.push(ol);
             } else {
-              remaining.push(item);
+              remaining.push(ol);
             }
           }
 
-          // Trouver l'index d'insertion dans la liste restante
           let toIdx = remaining.findIndex(x => x.file === g.file);
-          if (toIdx === -1) {
-            // La cible fait partie des items deplaces, ignorer
-            return;
-          }
+          if (toIdx === -1) return;
           if (!insertBefore) toIdx++;
 
-          // Inserer les items deplaces
           remaining.splice(toIdx, 0, ...movedItems);
           onlineList = remaining;
 
@@ -321,6 +390,7 @@ const SiteManagement = (() => {
   function swapSelected() {
     if (!selectedFiles.size || !selectedSide) return;
 
+    saveSnapshot();
     if (selectedSide === 'online') {
       const toMove = onlineList.filter(g => selectedFiles.has(g.file));
       onlineList = onlineList.filter(g => !selectedFiles.has(g.file));
@@ -372,6 +442,7 @@ const SiteManagement = (() => {
       });
 
       originalOnline = onlineList.map(g => g.file);
+      undoStack = [];
       updateApplyButton();
 
       const msgEl = document.getElementById('site-status');
@@ -387,5 +458,5 @@ const SiteManagement = (() => {
     }
   }
 
-  return { init, onActivate };
+  return { init, onActivate, undo };
 })();

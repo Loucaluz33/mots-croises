@@ -42,6 +42,24 @@ body {
   border-bottom-color: #4a6cf7;
   background: white;
 }
+/* Tab drag & drop */
+.tab-bar button { position: relative; }
+.tab-bar button.tab-dragging {
+  opacity: 0.3;
+}
+.tab-bar button.tab-drop-left::before,
+.tab-bar button.tab-drop-right::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  background: #4a6cf7;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(74,108,247,0.5);
+}
+.tab-bar button.tab-drop-left::before { left: -2px; }
+.tab-bar button.tab-drop-right::after { right: -2px; }
 
 /* ========== TAB CONTENT ========== */
 .tab-content { display: none; height: calc(100vh - 105px); overflow: hidden; }
@@ -215,6 +233,10 @@ body {
   cursor: pointer; border-radius: 3px;
 }
 .suggestion-word:hover { background: #f0f4ff; }
+.suggestion-word.selected {
+  background: #4a6cf7 !important;
+  color: white !important;
+}
 .suggestion-word.personal { color: #e67e22; font-weight: 500; }
 .suggestion-word-separator {
   height: 1px; background: #eee; margin: 2px 4px;
@@ -480,6 +502,146 @@ tr.selected { background: #e8eeff !important; }
 .progress-container { padding: 12px; }
 .progress-msg { font-size: 12px; color: #666; margin-top: 6px; }
 
+/* ========== GESTION GRILLES ========== */
+#tab-grid-mgmt { overflow-y: auto; }
+.grid-mgmt-tab {
+  flex-direction: column;
+  padding: 24px 32px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.grid-mgmt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.grid-mgmt-header h2 {
+  font-size: 18px;
+}
+.grid-mgmt-count {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 16px;
+}
+.grid-mgmt-empty {
+  font-size: 13px;
+  color: #999;
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* View toggle buttons */
+.grid-mgmt-view-toggle {
+  display: flex;
+  gap: 2px;
+  background: #e8ecf4;
+  border-radius: 6px;
+  padding: 2px;
+}
+.view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.15s;
+}
+.view-btn:hover { color: #4a6cf7; }
+.view-btn.active {
+  background: white;
+  color: #4a6cf7;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ===== Vue Liste ===== */
+.grid-mgmt-list {
+  border: 1.5px solid #cdd5e0;
+  border-radius: 8px;
+  background: white;
+  overflow: hidden;
+}
+.grid-mgmt-row {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 0;
+  font-size: 12px;
+}
+.grid-mgmt-row-header {
+  background: #f0f2f5;
+  font-weight: 600;
+  color: #555;
+  height: 36px;
+  border-bottom: 1px solid #cdd5e0;
+  user-select: none;
+}
+.grid-mgmt-row-item {
+  height: 34px;
+  border-bottom: 1px solid #eee;
+  cursor: default;
+  transition: background 0.1s;
+}
+.grid-mgmt-row-item:last-child { border-bottom: none; }
+.grid-mgmt-row-item:hover { background: #f5f7ff; }
+
+.gm-col {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+.gm-col-nom     { flex: 2; min-width: 120px; }
+.gm-col-online  { flex: 2; min-width: 100px; }
+.gm-col-size    { flex: 0 0 70px; text-align: center; }
+.gm-col-author  { flex: 1.5; min-width: 80px; }
+.gm-col-created { flex: 1.5; min-width: 110px; }
+.gm-col-modified { flex: 1.5; min-width: 110px; }
+.gm-col-diff    { flex: 1; min-width: 70px; }
+.gm-col-theme   { flex: 1.5; min-width: 80px; }
+
+/* ===== Vue Miniatures ===== */
+.grid-mgmt-thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.grid-mgmt-thumb-card {
+  background: white;
+  border: 1.5px solid #cdd5e0;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: default;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.grid-mgmt-thumb-card:hover {
+  border-color: #4a6cf7;
+  box-shadow: 0 2px 8px rgba(74,108,247,0.15);
+}
+.grid-mgmt-thumb-canvas {
+  display: block;
+}
+.grid-mgmt-thumb-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
 /* ========== GESTION SITE ========== */
 /* ===== Gestion Site ===== */
 .site-mgmt-tab {
@@ -566,14 +728,11 @@ tr.selected { background: #e8eeff !important; }
   background: #4a6cf7;
   color: white;
 }
-.site-item.dragging {
-  opacity: 0.4;
-}
 .site-item.drop-above {
-  border-top: 2px solid #4a6cf7;
+  border-top: 3px solid #1a1a2e;
 }
 .site-item.drop-below {
-  border-bottom: 2px solid #4a6cf7;
+  border-bottom: 3px solid #1a1a2e;
 }
 .site-swap-col {
   display: flex;

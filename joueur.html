@@ -509,6 +509,10 @@ let validatedCells = new Set();
 let answers = {};
 let acrossClues = {};
 let downClues = {};
+let numberingStyle = 'european';
+let rowNumbering = 'roman';
+let colNumbering = 'arabic';
+let useSuffixes = true;
 let frenchStyle = false;
 let hasAnswers = false;
 
@@ -520,6 +524,22 @@ function toRoman(n) {
     while (n >= vals[i]) { result += syms[i]; n -= vals[i]; }
   }
   return result;
+}
+
+function toAlpha(n) {
+  let s = "";
+  while (n > 0) {
+    let m = (n - 1) % 26;
+    s = String.fromCharCode(65 + m) + s;
+    n = Math.floor((n - m) / 26);
+  }
+  return s;
+}
+
+function getLabel(n, type) {
+  if (type === 'roman') return toRoman(n);
+  if (type === 'alpha') return toAlpha(n);
+  return String(n);
 }
 
 function fromRoman(s) {
@@ -570,7 +590,11 @@ function loadPuzzle(data) {
   celebratedWords = new Set();
   validatedCells = new Set();
 
-  frenchStyle = data.style === 'french';
+  numberingStyle = data.numberingStyle || (data.style === 'american' ? 'american' : 'european');
+  rowNumbering = data.rowNumbering || 'roman';
+  colNumbering = data.colNumbering || 'arabic';
+  useSuffixes = data.useSuffixes !== undefined ? data.useSuffixes : true;
+  frenchStyle = numberingStyle === 'european';
   hasAnswers = false;
   answers = {};
   for (let r = 0; r < rows; r++)
@@ -597,12 +621,12 @@ function loadPuzzle(data) {
   acrossClues = {};
   downClues = {};
   for (const c of (data.clues.across || [])) {
-    const num = c.number != null ? c.number : (frenchStyle ? fromRoman(c.label) : parseInt(c.label));
-    acrossClues[num] = { number: num, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
+    const key = c.label;
+    acrossClues[key] = { label: c.label, number: key, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
   }
   for (const c of (data.clues.down || [])) {
-    const num = c.number != null ? c.number : parseInt(c.label);
-    downClues[num] = { number: num, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
+    const key = c.label;
+    downClues[key] = { label: c.label, number: key, row: c.row, col: c.col, length: c.length, clue: c.clue, answer: c.answer };
   }
 
   document.getElementById('welcomeScreen').style.display = 'none';
@@ -717,7 +741,7 @@ function renderGrid() {
 
   const highlightCells = selectedCell ? getWordCells(selectedCell[0], selectedCell[1], currentDirection) : [];
 
-  // French style: add column header row
+  // European style: add column header row
   if (frenchStyle) {
     const thead = document.createElement('tr');
     const corner = document.createElement('th');
@@ -733,7 +757,7 @@ function renderGrid() {
 
   for (let r = 0; r < rows; r++) {
     const tr = document.createElement('tr');
-    // French style: add row header
+    // European style: add row header
     if (frenchStyle) {
       const th = document.createElement('th');
       th.textContent = toRoman(r + 1);
@@ -903,14 +927,48 @@ function moveToCell(r, c) {
 
 // ========== CURRENT CLUE ==========
 function getClueNumber(r, c, dir) {
+  if (numberingStyle === 'american') {
+    const [sr, sc] = getWordStart(r, c, dir);
+    return String(playerGrid[sr][sc].number);
+  }
   if (frenchStyle) {
-    return dir === 'across' ? r + 1 : c + 1;
+    const labelBase = getLabel(dir === 'across' ? r + 1 : c + 1, dir === 'across' ? rowNumbering : colNumbering);
+    if (!useSuffixes) return labelBase;
+
+    // Find which word it is in the line to append suffix
+    const cells = getWordCells(r, c, dir);
+    const [sr, sc] = cells[0];
+    const allWords = [];
+    if (dir === 'across') {
+      let curC = 0;
+      while (curC < cols) {
+        if (!playerGrid[r][curC].black) {
+          const startC = curC;
+          while (curC < cols && !playerGrid[r][curC].black) curC++;
+          if (curC - startC >= 2) allWords.push(startC);
+        } else curC++;
+      }
+      const idx = allWords.indexOf(sc);
+      return allWords.length > 1 ? `${labelBase}.${String.fromCharCode(97 + idx)}` : labelBase;
+    } else {
+      let curR = 0;
+      while (curR < rows) {
+        if (!playerGrid[curR][c].black) {
+          const startR = curR;
+          while (curR < rows && !playerGrid[curR][c].black) curR++;
+          if (curR - startR >= 2) allWords.push(startR);
+        } else curR++;
+      }
+      const idx = allWords.indexOf(sr);
+      return allWords.length > 1 ? `${labelBase}.${String.fromCharCode(97 + idx)}` : labelBase;
+    }
   }
   const [sr, sc] = getWordStart(r, c, dir);
-  return playerGrid[sr][sc].number;
+  return String(playerGrid[sr][sc].number);
 }
 
 function formatClueNumber(num, dir) {
+  if (numberingStyle === 'american') return String(num);
   if (frenchStyle && dir === 'across') return toRoman(num);
   return String(num);
 }
@@ -918,11 +976,10 @@ function formatClueNumber(num, dir) {
 function updateCurrentClue() {
   if (!selectedCell) return;
   const [r, c] = selectedCell;
-  const num = getClueNumber(r, c, currentDirection);
+  const label = getClueNumber(r, c, currentDirection);
   const dirLabel = currentDirection === 'across' ? 'H' : 'V';
   const clueMap = currentDirection === 'across' ? acrossClues : downClues;
-  const clue = clueMap[num];
-  const label = formatClueNumber(num, currentDirection);
+  const clue = clueMap[label];
 
   document.getElementById('currentClueDir').textContent = `${label} ${dirLabel}.`;
   document.getElementById('currentClueText').textContent = clue ? clue.clue : '';
@@ -937,22 +994,24 @@ function renderClues() {
 function renderClueDir(dir, containerId, clueMap) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
-  const nums = Object.keys(clueMap).map(Number).sort((a, b) => a - b);
+  // Sort keys naturally (A, B... or 1, 2... or I, II...)
+  const keys = Object.keys(clueMap).sort((a, b) => {
+    return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+  });
 
-  for (const num of nums) {
-    const entry = clueMap[num];
+  for (const key of keys) {
+    const entry = clueMap[key];
     const item = document.createElement('div');
     item.className = 'clue-item';
     item.dataset.dir = dir;
-    item.dataset.number = num;
+    item.dataset.label = key;
 
     const cells = getWordCells(entry.row, entry.col, dir);
     const allCorrect = cells.length > 0 && cells.every(([cr, cc]) => playerGrid[cr][cc].letter && playerGrid[cr][cc].letter === answers[`${cr},${cc}`]);
     if (allCorrect) item.classList.add('completed');
 
-    const displayNum = formatClueNumber(num, dir);
     item.innerHTML = `
-      <span class="clue-num">${displayNum}.</span>
+      <span class="clue-num">${key}.</span>
       <span class="clue-text">${entry.clue || '—'}</span>
     `;
     item.addEventListener('click', () => {
@@ -969,8 +1028,8 @@ function renderClueDir(dir, containerId, clueMap) {
 function highlightActiveClue() {
   document.querySelectorAll('.clue-item').forEach(el => el.classList.remove('active'));
   if (!selectedCell) return;
-  const num = getClueNumber(selectedCell[0], selectedCell[1], currentDirection);
-  const item = document.querySelector(`.clue-item[data-dir="${currentDirection}"][data-number="${num}"]`);
+  const label = getClueNumber(selectedCell[0], selectedCell[1], currentDirection);
+  const item = document.querySelector(`.clue-item[data-dir="${currentDirection}"][data-label="${label}"]`);
   if (item) {
     item.classList.add('active');
     item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
