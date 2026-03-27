@@ -19,102 +19,122 @@ const CluePanel = (() => {
   function renderColumn(el, title, clueDir, direction, gridData, rows, cols) {
     el.innerHTML = `<h3>${title}</h3>`;
 
-    // Trier les clés
-    const keys = Object.keys(clueDir).sort((a, b) => {
-      return clueKeySort(a, direction) - clueKeySort(b, direction);
+    // Regrouper par label (pour gérer les subClues sans suffixe)
+    const grouped = {};
+    for (const key of Object.keys(clueDir)) {
+      const c = clueDir[key];
+      if (!grouped[c.label]) grouped[c.label] = [];
+      grouped[c.label].push({ key, ...c });
+    }
+
+    // Trier les labels
+    const labels = Object.keys(grouped).sort((a, b) => {
+      // On utilise la première clé du groupe pour le tri
+      return clueKeySort(grouped[a][0].key, direction) - clueKeySort(grouped[b][0].key, direction);
     });
 
-    for (const key of keys) {
-      const c = clueDir[key];
-      const word = getWordFromGrid(c.row, c.col, direction, gridData, rows, cols);
-      const displayWord = word.replace(/ /g, '\u00B7');
-
+    for (const labelText of labels) {
+      const group = grouped[labelText];
       const item = document.createElement('div');
       item.className = 'clue-item';
       item.dataset.dir = direction;
-      item.dataset.key = key;
+      // Pour le highlight, on garde une trace de toutes les clés
+      item.dataset.keys = group.map(g => g.key).join(',');
 
       // Label
-      const label = document.createElement('span');
-      label.className = 'clue-label';
-      label.textContent = c.label;
-      label.addEventListener('click', () => {
-        GridEditor.selectCell(c.row, c.col, direction);
+      const labelEl = document.createElement('span');
+      labelEl.className = 'clue-label';
+      labelEl.textContent = labelText;
+      labelEl.addEventListener('click', () => {
+        GridEditor.selectCell(group[0].row, group[0].col, direction);
       });
+      item.appendChild(labelEl);
 
-      // Input définition
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'clue-text';
-      input.value = c.clue || '';
-      input.placeholder = 'Définition...';
-      input.addEventListener('change', () => {
-        GridEditor.clueText = { direction, key, text: input.value };
-      });
+      // Pour chaque mot du groupe
+      group.forEach((c, index) => {
+        const word = getWordFromGrid(c.row, c.col, direction, gridData, rows, cols);
+        const displayWord = word.replace(/ /g, '\u00B7');
 
-      // Mot
-      const isComplete = !word.includes(' ');
-      const wordSpan = document.createElement('span');
-      wordSpan.className = 'clue-word' + (isComplete ? ' complete' : '');
-      wordSpan.textContent = displayWord;
-      wordSpan.style.cursor = 'pointer';
-      wordSpan.addEventListener('click', () => {
-        GridEditor.selectCell(c.row, c.col, direction);
-      });
+        // Input définition
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'clue-text';
+        input.value = c.clue || '';
+        input.placeholder = group.length > 1 ? `Définition ${index + 1}...` : 'Définition...';
+        input.style.flex = "1";
+        input.addEventListener('change', () => {
+          GridEditor.clueText = { direction, key: c.key, text: input.value };
+        });
+        input.addEventListener('focus', () => {
+          GridEditor.selectCell(c.row, c.col, direction);
+        });
 
-      // Bouton S (save to personal)
-      const saveBtn = document.createElement('button');
-      saveBtn.className = 'clue-save-btn';
-      saveBtn.textContent = 'S';
-      saveBtn.title = 'Sauvegarder dans le dictionnaire personnel';
+        // Mot
+        const isComplete = !word.includes(' ');
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'clue-word' + (isComplete ? ' complete' : '');
+        wordSpan.textContent = displayWord;
+        wordSpan.style.cursor = 'pointer';
+        wordSpan.addEventListener('click', () => {
+          GridEditor.selectCell(c.row, c.col, direction);
+        });
 
-      const trimmedWord = word.trim();
-      const hasSpaces = trimmedWord.includes(' ');
-      const hasClue = (c.clue || '').trim().length > 0;
-      if (!trimmedWord || hasSpaces || !hasClue) {
-        saveBtn.classList.add('hidden');
-      }
+        // Bouton S
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'clue-save-btn';
+        saveBtn.textContent = 'S';
+        const trimmedWord = word.trim();
+        const hasSpaces = trimmedWord.includes(' ');
+        const hasClue = (c.clue || '').trim().length > 0;
+        if (!trimmedWord || hasSpaces || !hasClue) saveBtn.classList.add('hidden');
 
-      saveBtn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        try {
-          await api(`/api/dictionaries/${AppState.currentDictId}/words`, {
-            method: 'POST',
-            body: { mot: trimmedWord, definitions: [c.clue.trim()], categorie: '', notes: '' }
-          });
-          alert(`"${trimmedWord}" ajouté au dictionnaire personnel.`);
-          saveBtn.classList.add('hidden');
-        } catch (err) {
-          if (err.message.includes('existant')) {
-            // Le mot existe déjà, essayer d'ajouter la définition
-            try {
-              const existing = await api(`/api/dictionaries/${AppState.currentDictId}/words/${encodeURIComponent(trimmedWord)}`);
-              const defs = existing.definitions ? JSON.parse(existing.definitions) : [];
-              if (!defs.includes(c.clue.trim())) {
-                defs.push(c.clue.trim());
-                await api(`/api/dictionaries/${AppState.currentDictId}/words/${encodeURIComponent(trimmedWord)}`, {
-                  method: 'PUT',
-                  body: { definitions: defs }
-                });
-                alert(`Définition ajoutée à "${trimmedWord}".`);
-              } else {
-                alert(`La définition est déjà présente pour "${trimmedWord}".`);
-              }
-              saveBtn.classList.add('hidden');
-            } catch (e2) {
-              alert('Erreur : ' + e2.message);
-            }
-          } else {
-            alert('Erreur : ' + err.message);
-          }
+        saveBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          // ... (logique de sauvegarde identique)
+          saveWordToPersonal(trimmedWord, c.clue.trim(), saveBtn);
+        });
+
+        item.appendChild(input);
+        if (group.length > 1 && index < group.length - 1) {
+          const sep = document.createElement('span');
+          sep.textContent = ' - ';
+          sep.style.color = '#ccc';
+          item.appendChild(sep);
         }
+        item.appendChild(wordSpan);
+        item.appendChild(saveBtn);
       });
 
-      item.appendChild(label);
-      item.appendChild(input);
-      item.appendChild(wordSpan);
-      item.appendChild(saveBtn);
       el.appendChild(item);
+    }
+  }
+
+  async function saveWordToPersonal(word, clue, btn) {
+    try {
+      await api(`/api/dictionaries/${AppState.currentDictId}/words`, {
+        method: 'POST',
+        body: { mot: word, definitions: [clue], categorie: '', notes: '' }
+      });
+      alert(`"${word}" ajouté au dictionnaire personnel.`);
+      btn.classList.add('hidden');
+    } catch (err) {
+      if (err.message.includes('existant')) {
+        try {
+          const existing = await api(`/api/dictionaries/${AppState.currentDictId}/words/${encodeURIComponent(word)}`);
+          const defs = existing.definitions ? JSON.parse(existing.definitions) : [];
+          if (!defs.includes(clue)) {
+            defs.push(clue);
+            await api(`/api/dictionaries/${AppState.currentDictId}/words/${encodeURIComponent(word)}`, {
+              method: 'PUT',
+              body: { definitions: defs }
+            });
+            alert(`Définition ajoutée à "${word}".`);
+          } else {
+            alert(`La définition est déjà présente pour "${word}".`);
+          }
+          btn.classList.add('hidden');
+        } catch (e2) { alert('Erreur : ' + e2.message); }
+      } else { alert('Erreur : ' + err.message); }
     }
   }
 
@@ -126,12 +146,16 @@ const CluePanel = (() => {
     for (const [key, clue] of Object.entries(clues[dir])) {
       const cells = GridEditor.getWordCells(clue.row, clue.col, dir);
       if (cells.some(([cr, cc]) => cr === r && cc === c)) {
-        const el = document.querySelector(`.clue-item[data-dir="${dir}"][data-key="${key}"]`);
-        if (el) {
-          el.classList.add('active');
-          el.scrollIntoView({ block: 'nearest' });
+        // Chercher l'élément qui contient cette clé dans son dataset.keys
+        const items = document.querySelectorAll(`.clue-item[data-dir="${dir}"]`);
+        for (const item of items) {
+          const keys = (item.dataset.keys || '').split(',');
+          if (keys.includes(key)) {
+            item.classList.add('active');
+            item.scrollIntoView({ block: 'nearest' });
+            return;
+          }
         }
-        break;
       }
     }
   }

@@ -603,14 +603,16 @@ const GridEditor = (() => {
         const labelBase = getLabel(r + 1, rowNumbering);
         if (wordsInRow.length === 0) continue;
 
-        if (!useSuffixes) {
-          const key = labelBase;
-          const mergedClue = wordsInRow.map(col => findOldClue(oldClues.across, r, col)).filter(Boolean).join(' - ');
-          clues.across[key] = { label: key, row: r, col: wordsInRow[0], clue: mergedClue };
+        if (!useSuffixes && wordsInRow.length > 1) {
+          for (let i = 0; i < wordsInRow.length; i++) {
+            const key = `${labelBase}.${i}`;
+            const oldClue = findOldClue(oldClues.across, r, wordsInRow[i]);
+            clues.across[key] = { label: labelBase, row: r, col: wordsInRow[i], clue: oldClue, isSubClue: true, subIndex: i };
+          }
         } else if (wordsInRow.length === 1) {
           const key = labelBase;
           const oldClue = findOldClue(oldClues.across, r, wordsInRow[0]);
-          clues.across[key] = { label: key, row: r, col: wordsInRow[0], clue: oldClue };
+          clues.across[key] = { label: labelBase, row: r, col: wordsInRow[0], clue: oldClue };
         } else {
           for (let i = 0; i < wordsInRow.length; i++) {
             const suffix = String.fromCharCode(97 + i);
@@ -636,14 +638,16 @@ const GridEditor = (() => {
         const labelBase = getLabel(c + 1, colNumbering);
         if (wordsInCol.length === 0) continue;
 
-        if (!useSuffixes) {
-          const key = labelBase;
-          const mergedClue = wordsInCol.map(row => findOldClue(oldClues.down, row, c)).filter(Boolean).join(' - ');
-          clues.down[key] = { label: key, row: wordsInCol[0], col: c, clue: mergedClue };
+        if (!useSuffixes && wordsInCol.length > 1) {
+          for (let i = 0; i < wordsInCol.length; i++) {
+            const key = `${labelBase}.${i}`;
+            const oldClue = findOldClue(oldClues.down, wordsInCol[i], c);
+            clues.down[key] = { label: labelBase, row: wordsInCol[i], col: c, clue: oldClue, isSubClue: true, subIndex: i };
+          }
         } else if (wordsInCol.length === 1) {
           const key = labelBase;
           const oldClue = findOldClue(oldClues.down, wordsInCol[0], c);
-          clues.down[key] = { label: key, row: wordsInCol[0], col: c, clue: oldClue };
+          clues.down[key] = { label: labelBase, row: wordsInCol[0], col: c, clue: oldClue };
         } else {
           for (let i = 0; i < wordsInCol.length; i++) {
             const suffix = String.fromCharCode(97 + i);
