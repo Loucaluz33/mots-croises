@@ -9,6 +9,24 @@ import { dictDownloadPlugin } from './vite-plugins/dict-downloader'
 
 /** Path to the SQLite database file (same parent directory) */
 const DB_PATH = path.resolve(__dirname, 'verbicrucix.db')
+const BACKUP_DIR = path.resolve(__dirname, 'backups')
+const MAX_BACKUPS = 10
+
+function createBackup() {
+  if (!fs.existsSync(DB_PATH)) return
+  if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR)
+  const now = new Date()
+  const ts = now.toISOString().replace(/[-:T]/g, '').slice(0, 15) // YYYYMMDDHHMMSS
+  const dest = path.join(BACKUP_DIR, `verbicrucix_${ts}.db`)
+  fs.copyFileSync(DB_PATH, dest)
+  // Purge old backups beyond MAX_BACKUPS
+  const files = fs.readdirSync(BACKUP_DIR)
+    .filter(f => f.startsWith('verbicrucix_') && f.endsWith('.db'))
+    .sort()
+  while (files.length > MAX_BACKUPS) {
+    fs.unlinkSync(path.join(BACKUP_DIR, files.shift()!))
+  }
+}
 
 function sqliteDevServer(): Plugin {
   return {
@@ -47,6 +65,7 @@ function handleDbRequest(req: import('http').IncomingMessage, res: import('http'
     const chunks: Buffer[] = []
     req.on('data', (chunk: Buffer) => chunks.push(chunk))
     req.on('end', () => {
+      try { createBackup() } catch (e) { console.warn('Backup failed:', e) }
       const data = Buffer.concat(chunks)
       fs.writeFileSync(DB_PATH, data)
       res.writeHead(200, { 'Content-Type': 'application/json' })

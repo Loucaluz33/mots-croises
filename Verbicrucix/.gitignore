@@ -25,3 +25,6 @@ dist-ssr
 
 # SQLite database
 *.db
+
+# Local dictionary data
+dictionnaire_wikipedia.json

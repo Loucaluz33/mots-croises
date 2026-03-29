@@ -5,3 +5,4 @@ node_modules/
 *.db-wal
 .vite/
 dist/
+Audit.docx
