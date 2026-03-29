@@ -5,5 +5,3 @@ node_modules/
 *.db-wal
 .vite/
 dist/
-verbicruciste/backups/
-verbicruciste/*.json
